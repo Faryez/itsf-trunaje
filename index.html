@@ -50,11 +50,11 @@ const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const R=6371,W=400,H=380;
 const roadC=LS('road')||{};
-let start=LS('start')||{name:'Praha',lon:14.43,lat:50.08};
+let start={name:'Praha',lon:14.43,lat:50.08};
 let T=[],P=[],max=600,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
 const hav=(a,b)=>{const r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const x=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const val=t=>t.road??t.air;
-const col=k=>k<500?'success':k<1000?'warning':'danger';
+const col=k=>k<300?'success':k<600?'warning':'danger';
 const fmt=n=>Math.round(n).toLocaleString('cs-CZ').replace(/\u00a0/g,' ');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -139,6 +139,7 @@ function drawMap(){
  }
  const h=proj(HM);
  P=pinsOf();
+ const sc=$('mapwrap').clientWidth/W||1,fs=Math.max(6.6,9/sc),k=fs/11;
  P.forEach(p=>{
   const q=proj([p.lon,p.lat]);let x=q[0],y=q[1];
   if(Math.hypot(x-h[0],y-h[1])<14){x=h[0]+12;y=h[1]-12;}
@@ -149,13 +150,13 @@ function drawMap(){
   grp.append('path').attr('d','M'+h[0]+','+h[1]+' Q'+((h[0]+x)/2-(y-h[1])*0.18)+','+((h[1]+y)/2+(x-h[0])*0.18)+' '+x+','+y).attr('fill','none').attr('stroke',c).attr('stroke-width',isSel?2.5:1.5).attr('stroke-linecap','round').attr('opacity',0.6);
   grp.append('circle').attr('cx',x).attr('cy',y).attr('r',isSel?15:11).attr('fill',c).attr('opacity',0.2);
   grp.append('circle').attr('cx',x).attr('cy',y).attr('r',isSel?7.5:5.5).attr('fill',c).attr('stroke','var(--surface-2)').attr('stroke-width',2);
-  const tx=grp.append('text').attr('font-size',11).attr('font-weight',500).attr('fill','var(--text-primary)').text(p.label+' · '+fmt(p.v)+' km');
-  const w=tx.node().getComputedTextLength()+16,hh=22,dx=x-h[0],dy=y-h[1];
+  const tx=grp.append('text').attr('font-size',fs).attr('font-weight',500).attr('fill','var(--text-primary)').text(p.label+' · '+fmt(p.v)+' km');
+  const w=tx.node().getComputedTextLength()+16*k,hh=22*k,dx=x-h[0],dy=y-h[1];
   let rx,ry;
-  if(Math.abs(dx)>Math.abs(dy)){ry=y-hh/2;rx=dx>0?x+12:x-w-12;}else{rx=x-w/2;ry=dy>0?y+12:y-hh-12;}
+  if(Math.abs(dx)>Math.abs(dy)){ry=y-hh/2;rx=dx>0?x+12*k:x-w-12*k;}else{rx=x-w/2;ry=dy>0?y+12*k:y-hh-12*k;}
   rx=Math.max(4,Math.min(W-w-4,rx));ry=Math.max(4,Math.min(H-hh-4,ry));
-  grp.insert('rect','text').attr('x',rx).attr('y',ry).attr('width',w).attr('height',hh).attr('rx',11).attr('fill','var(--surface-2)').attr('stroke',isSel?'var(--border-accent)':'var(--border-strong)').attr('stroke-width',isSel?1.5:0.5);
-  tx.attr('x',rx+8).attr('y',ry+hh/2+4);
+  grp.insert('rect','text').attr('x',rx).attr('y',ry).attr('width',w).attr('height',hh).attr('rx',hh/2).attr('fill','var(--surface-2)').attr('stroke',isSel?'var(--border-accent)':'var(--border-strong)').attr('stroke-width',isSel?1.5:0.5);
+  tx.attr('x',rx+8*k).attr('y',ry+hh/2+4*k);
  });
  g.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',13).attr('fill','var(--fill-accent)').attr('opacity',0.2).style('pointer-events','none');
  g.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',7).attr('fill','var(--fill-accent)').attr('stroke','var(--surface-2)').attr('stroke-width',2.5).style('pointer-events','none');
