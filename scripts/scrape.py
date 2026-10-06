@@ -93,7 +93,9 @@ for r in rows:
     if r["addr"] and c and c.lower() not in addr.lower():
         addr += ", " + c
     g = loose(addr) or {}
-    out.append({"name": r["name"], "addr": addr, "date": r["date"], **g})
+    m = re.search(r"/p/([A-Za-z0-9]+)", r["url"] or "")
+    url = f"{BASE}/p/{m.group(1)}" if m else ""
+    out.append({"name": r["name"], "addr": addr, "date": r["date"], "url": url, **g})
     CACHE.write_text(json.dumps(cache, ensure_ascii=False))
 
 OUT.write_text(json.dumps({"updated": datetime.datetime.utcnow().isoformat() + "Z", "tournaments": out}, ensure_ascii=False, indent=1))
