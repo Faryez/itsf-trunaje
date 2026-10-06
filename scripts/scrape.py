@@ -53,9 +53,22 @@ def loose(addr):
 
 with sync_playwright() as p:
     b = p.chromium.launch()
-    page = b.new_page(viewport={"width": 1400, "height": 900})
+    ctx = b.new_context(
+        viewport={"width": 1400, "height": 900},
+        locale="en-US",
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    )
+    page = ctx.new_page()
     page.goto(LIST, wait_until="networkidle")
-    page.wait_for_selector("a:text-is('REGISTER')", timeout=30000)
+    try:
+        page.wait_for_function(
+            "[...document.querySelectorAll('a')].some(a=>a.textContent.trim().toUpperCase()==='REGISTER')",
+            timeout=30000,
+        )
+    except Exception:
+        print("TITLE:", page.title())
+        print(page.inner_text("body")[:1500])
+        sys.exit("tournament list not found")
     rows = page.evaluate(LIST_JS)
     print("tournaments:", len(rows))
     if not rows:
