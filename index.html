@@ -151,7 +151,7 @@ function drawMap(){
  rings=[];
  for(let km=200;km<=top;km+=200){
   const major=km%1000===0;
-  ne(gMap.append('path').datum(d3.geoCircle().center(HM).radius(km/111.195)()).attr('d',path).attr('fill','none').attr('stroke',major?'var(--border-strong)':'var(--border)').attr('stroke-width',major?1.2:1).attr('stroke-dasharray','2 5'));
+  ne(gMap.append('path').datum(d3.geoCircle().center(HM).radius(km/111.195)()).attr('d',path).attr('fill','none').attr('stroke','var(--text-secondary)').attr('stroke-width',major?1.6:1.1).attr('opacity',major?0.9:0.55).attr('stroke-dasharray','6 5'));
   rings.push({km,major,last:km===top,lp:proj([HM[0],HM[1]+km/111.195])});
  }
  H0=proj(HM);
@@ -199,7 +199,7 @@ function showPop(){
  const p=P.find(x=>x.id===sel);
  if(!p||!proj)return;
  const wrap=$('mapwrap'),sc=wrap.clientWidth/W;
- pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.items.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div><div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km, autem ${t.road==null?'…':fmt(t.road)+' km'}${t.approx?' (poloha jen přibližně)':''}</div><a href="${gmaps(t)}" target="_blank" rel="noopener">Trasa v Google Maps</a></div>`).join('')+'<div class="t" id="pt"></div>';
+ pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.items.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div><div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km, autem ${t.road==null?'…':fmt(t.road)+' km'}${t.approx?' (poloha jen přibližně)':''}</div>${t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a> · ':''}<a href="${gmaps(t)}" target="_blank" rel="noopener">Trasa v Google Maps</a></div>`).join('')+'<div class="t" id="pt"></div>';
  pop.style.display='block';
  const pw=pop.offsetWidth,ph=pop.offsetHeight,cw=wrap.clientWidth,px=p.x*sc,py=p.y*sc;
  const left=Math.max(4,Math.min(cw-pw-4,px-pw/2));
@@ -229,7 +229,7 @@ function render(){
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
    ${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:'<span></span>'}
-   <a class="gm" href="${gmaps(t)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Trasa v Google Maps ↗</a>
+   <span style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end">${t.url?`<a class="gm" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Odkaz na turnaj ↗</a>`:''}<a class="gm" href="${gmaps(t)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Trasa v Google Maps ↗</a></span>
   </div></div>`;}).join('');
  document.querySelectorAll('#list [data-id]').forEach(el=>el.onclick=()=>{sel=(sel===el.dataset.id?null:el.dataset.id);render();if(sel)focusPin(sel);if(window.innerWidth<=820)$('map').scrollIntoView({behavior:'smooth',block:'nearest'});});
  $('note').textContent=(skipped?skipped+' turnajů se nepodařilo umístit na mapu. ':'')+'Klikni na kartu nebo bod na mapě pro detail. Kruhy na mapě jsou po 200 km vzdušnou čarou.';
