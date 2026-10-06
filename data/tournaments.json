@@ -1,1 +1,197 @@
-{"updated":"2026-10-05T00:00:00Z","tournaments":[]}
+{
+ "updated": "2026-10-06T11:01:19.691255Z",
+ "tournaments": [
+  {
+   "name": "FUS Regional Championships of TRNAVA 2026/27",
+   "addr": "Šrobárova 10, 917 01, Trnavský kraj, Slovakia",
+   "date": "2 - 4 Oct",
+   "lat": 48.3820269,
+   "lon": 17.5827054,
+   "approx": false
+  },
+  {
+   "name": "Ricardo Lopes Cup 2026",
+   "addr": "Rua Centro Cívico, 6200-866, Covilhã, Castelo Branco, Portugal",
+   "date": "3 - 4 Oct",
+   "lat": 40.3091877,
+   "lon": -7.4925973,
+   "approx": false
+  },
+  {
+   "name": "ITSF250 III OPEN INTERNACIONAL DE LOECHES",
+   "addr": "Calle De La Chorrera 7, 28890, Loeches, Provincia de Madrid, Spain",
+   "date": "9 - 10 Oct",
+   "lat": 42.1005064,
+   "lon": -1.7753164,
+   "approx": true
+  },
+  {
+   "name": "MULTITABLE WT250 ARCD BENTE 2026",
+   "addr": "Rua da Agra, 4770, Bente, Braga, Portugal",
+   "date": "10 Oct",
+   "lat": 41.3847691,
+   "lon": -8.4531769,
+   "approx": true
+  },
+  {
+   "name": "World Series Leonhart 2026",
+   "addr": "Halbergstraße 84, 66121, Saarbrücken, Saarbrücken, Germany",
+   "date": "14 - 18 Oct",
+   "lat": 49.2303293,
+   "lon": 7.0151193,
+   "approx": false
+  },
+  {
+   "name": "ITSF Gold Finals 2026",
+   "addr": "Halbergstraße 84, 66121, Saarbrücken, Germany",
+   "date": "14 Oct",
+   "lat": 49.2303293,
+   "lon": 7.0151193,
+   "approx": false
+  },
+  {
+   "name": "2026 OTTAWA FALL OPEN",
+   "addr": "Merivale Road 1642, K2G 4A1, Nepean, Nepean, Canada",
+   "date": "2026 OTTAWA FALL OPEN",
+   "lat": 45.344694,
+   "lon": -75.7316559,
+   "approx": false
+  },
+  {
+   "name": "Czech Rosengart Open 2026",
+   "addr": "Žernosecká 2, 182 00, Czechia",
+   "date": "23 - 25 Oct",
+   "lat": 50.1323816,
+   "lon": 14.4756948,
+   "approx": false
+  },
+  {
+   "name": "Csíki Csocsó Pro Tour",
+   "addr": "Miercurea Ciuc, Harghita County, Romania",
+   "date": "23 - 25 Oct",
+   "lat": 45.9852129,
+   "lon": 24.6859225,
+   "approx": true
+  },
+  {
+   "name": "FUS Eastern Slovak Championships 2026/27",
+   "addr": "Košice, Košice Region, Slovakia",
+   "date": "23 - 25 Oct",
+   "lat": 48.7220196,
+   "lon": 21.2692121,
+   "approx": false
+  },
+  {
+   "name": "III Barbara Kurtyka Memorial",
+   "addr": "Składowa 5, 50-209, Wrocław, Województwo dolnośląskie, Poland",
+   "date": "23 - 25 Oct",
+   "lat": 51.120293,
+   "lon": 17.0270025,
+   "approx": false
+  },
+  {
+   "name": "Americas Cup 2026",
+   "addr": "Boulevard Kukulcan Km 13.5, 77500, Cancún, Quintana Roo, Mexico",
+   "date": "29 Oct - 1 Nov",
+   "lat": 21.092704,
+   "lon": -86.7706697,
+   "approx": false
+  },
+  {
+   "name": "8th Romanian Bonzini Masters",
+   "addr": "Splaiul Independenței 315, 060043, București, București, Romania",
+   "date": "30 Oct - 1 Nov",
+   "lat": 44.4442736,
+   "lon": 26.0518318,
+   "approx": false
+  },
+  {
+   "name": "Sofia Grand Masters 2026",
+   "addr": "Ловен Парк 5, 1172, София, София, Bulgaria",
+   "date": "30 Oct - 1 Nov",
+   "lat": 42.6634495,
+   "lon": 23.3433936,
+   "approx": false
+  },
+  {
+   "name": "CROATIA OPEN 2026",
+   "addr": "Kelekova ulica 4, 10360, Sesvete, Grad Zagreb, Croatia",
+   "date": "6 - 7 Nov",
+   "lat": 45.831996,
+   "lon": 16.1098955,
+   "approx": true
+  },
+  {
+   "name": "P4P Ullrich Championship 2026 - ITSF 500",
+   "addr": "91555 Feuchtwangen, Germania, 91555, Feuchtwangen, Bavaria, Germany",
+   "date": "6 - 8 Nov",
+   "lat": 49.1752971,
+   "lon": 10.321351,
+   "approx": true
+  },
+  {
+   "name": "INTERNATIONAL MASTER'S TOUR INDIA 2026",
+   "addr": "Ambala, Haryana, India",
+   "date": "12 - 15 Nov",
+   "lat": 30.3843674,
+   "lon": 76.770421,
+   "approx": false
+  },
+  {
+   "name": "2026 Québec Leonhart Open",
+   "addr": "Boulevard Sainte-Anne 2250, G1J 1Y2, Québec, Québec, Canada",
+   "date": "13 - 16 Nov",
+   "lat": 46.841558,
+   "lon": -71.2179809,
+   "approx": false
+  },
+  {
+   "name": "FUS SLOVAK TORNADO MASTERS 2026",
+   "addr": "Jiráskova 1, 851 01, Bratislava, Bratislavský kraj, Slovakia",
+   "date": "13 - 15 Nov",
+   "lat": 48.1177841,
+   "lon": 17.1041763,
+   "approx": false
+  },
+  {
+   "name": "31e Open National de Montreuil-sur-Mer (ITSF 500)",
+   "addr": "Rue De Montreuil, 62170, Écuires, Écuires, France",
+   "date": "14 - 15 Nov",
+   "lat": 50.4537309,
+   "lon": 1.7515978,
+   "approx": false
+  },
+  {
+   "name": "Itsf Youth 500 Berlin",
+   "addr": "Siemensstraße 26, 10551, Berlin, Berlin, Germany",
+   "date": "14 - 15 Nov",
+   "lat": 52.5337603,
+   "lon": 13.3379308,
+   "approx": false
+  },
+  {
+   "name": "Amsterdam Open",
+   "addr": "Zuider IJdijk 20, 1095 KN, Amsterdam, Netherlands",
+   "date": "14 Nov",
+   "lat": 52.364499,
+   "lon": 4.9613801,
+   "approx": false
+  },
+  {
+   "name": "Aarhus Open",
+   "addr": "N. J. Fjords Gade 2R, 8000, Aarhus, Denmark",
+   "date": "20 - 21 Nov",
+   "lat": 56.144009,
+   "lon": 10.198238,
+   "approx": false
+  },
+  {
+   "name": "NAIROBI OPEN 2026",
+   "addr": "Kamunde Road, Nairobi, Kenya",
+   "date": "5 Dec",
+   "lat": -1.252604,
+   "lon": 36.8859094,
+   "approx": false
+  }
+ ]
+}
