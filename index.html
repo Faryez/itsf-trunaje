@@ -146,7 +146,7 @@ function drawMap(){
  const ne=x=>x.attr('vector-effect','non-scaling-stroke').style('pointer-events','none');
  gMap.append('rect').attr('width',W).attr('height',H).attr('fill','var(--surface-0)').on('click',()=>{sel=null;render();});
  ne(gMap.append('path').datum(topojson.feature(world,world.objects.land)).attr('d',path).attr('fill','var(--surface-2)').attr('stroke','var(--border)').attr('stroke-width',0.6));
- ne(gMap.append('path').datum(topojson.mesh(world,world.objects.countries,(a,b)=>a!==b)).attr('d',path).attr('fill','none').attr('stroke','var(--border)').attr('stroke-width',0.5).attr('opacity',0.6));
+ ne(gMap.append('path').datum(topojson.mesh(world,world.objects.countries,(a,b)=>a!==b)).attr('d',path).attr('fill','none').attr('stroke','var(--text-muted)').attr('stroke-width',0.9).attr('opacity',0.75));
  const top=Math.ceil(maxA*R/200)*200;
  rings=[];
  for(let km=200;km<=top;km+=200){
