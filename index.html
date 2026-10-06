@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="cs"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ITSF turnaje – mapa a vzdálenosti</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px system-ui,sans-serif;display:flex;height:100vh;color:#222}
+#side{width:430px;max-width:45vw;overflow:auto;padding:14px;border-right:1px solid #ddd;background:#fafafa}
+#map{flex:1}
+h1{font-size:17px;margin:0 0 10px}
+label{display:block;font-weight:600;margin:10px 0 3px}
+input,textarea,select{width:100%;padding:6px;border:1px solid #bbb;border-radius:4px;font:inherit}
+textarea{height:130px;font-size:12px}
+.row{display:flex;gap:8px;align-items:end}.row>div{flex:1}
+button{margin-top:8px;padding:8px 12px;border:0;border-radius:4px;background:#1a5fb4;color:#fff;font:inherit;cursor:pointer}
+#st{margin:8px 0;color:#666;min-height:18px}
+table{width:100%;border-collapse:collapse;margin-top:6px}
+th,td{text-align:left;padding:5px 4px;border-bottom:1px solid #e3e3e3;vertical-align:top}
+th{cursor:pointer;font-size:12px}tr.t{cursor:pointer}tr.t:hover{background:#eef}
+.s{font-size:11px;color:#777}.d{white-space:nowrap;font-weight:600}.cd{font-weight:600;color:#1a5fb4;margin-top:2px}
+@media(max-width:800px){body{flex-direction:column-reverse}#side{width:100%;max-width:none;height:55vh}#map{height:45vh;flex:none}}
+label[for=data],#data{display:none}
+</style></head><body>
+<div id="side">
+<h1>Turnaje – vzdálenost od mého bodu</h1>
+<div class="row">
+ <div><label for="start">Výchozí bod</label><input id="start" value="Praha"></div>
+ <div style="max-width:120px"><label for="max">Max. km</label><input id="max" type="number" placeholder="bez limitu"></div>
+</div>
+<label for="sort">Řadit podle</label><select id="sort"><option value="days">termín (nejbližší první)</option><option value="road">vzdálenost autem</option><option value="air">vzdálenost vzdušně</option></select>
+<label for="data">Turnaje (jeden na řádek: název | adresa | datum)</label>
+<textarea id="data" spellcheck="false" style="height:180px"></textarea>
+<button id="go">Přepočítat vzdálenosti</button>
+<div id="st"></div><div id="upd" class="s"></div>
+<table><thead><tr><th>Turnaj</th><th data-k="air">Vzdušně</th><th data-k="road">Autem</th></tr></thead><tbody id="tb"></tbody></table>
+<p class="s">Modrý bod = start. Zelená &lt; 500 km, oranžová &lt; 1000 km, červená dál. ~ = jen přibližně (našla se jen země/město). Řazení: klikni na hlavičku.</p>
+</div>
+<div id="map"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const LS=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const SAMPLE="Ullrich Championship | Feuchtwangen, Germany | 6.–8. 11. 2026\nITSF Youth 500 | Berlin, Germany |\nSofia Grand Masters | Sofia, Bulgaria |";
+const geo=LS('geo')||{}, road=LS('road')||{};
+$('data').value=LS('data')||SAMPLE; $('start').value=LS('start')||'Praha'; $('max').value=LS('max')||'';
+const map=L.map('map').setView([50.08,14.43],5);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+const layer=L.layerGroup().addTo(map);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let DATA=[],start=null,items=[],sortKey='days',markers={};
+async function geocode(q){
+ if(geo[q]) return geo[q];
+ await sleep(1100);
+ try{
+  const j=await (await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q))).json();
+  if(j[0]){geo[q]={lat:+j[0].lat,lon:+j[0].lon};SV('geo',geo);return geo[q];}
+ }catch(e){}
+ return null;
+}
+async function loose(a){
+ const p=a.split(',').map(x=>x.trim()).filter(Boolean);
+ for(let k=0;k<p.length;k++){const g=await geocode(p.slice(k).join(', '));if(g)return {...g,approx:k>0};}
+ return null;
+}
+function hav(a,b){const R=6371,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lon-a.lon)*r;
+ const x=Math.sin(dl/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+async function drive(a,b){
+ const k=[a.lat,a.lon,b.lat,b.lon].map(n=>n.toFixed(3)).join();
+ if(road[k]!=null) return road[k];
+ try{
+  const j=await (await fetch(`https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=false`)).json();
+  if(j.routes&&j.routes[0]){road[k]=j.routes[0].distance/1000;SV('road',road);return road[k];}
+ }catch(e){}
+ return null;
+}
+const col=d=>d<500?'#2e9e48':d<1000?'#e8a317':'#d03030';
+const fmt=v=>v==null?'…':Math.round(v)+' km';
+const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+function parseD(s){
+ if(!s)return null;
+ let m,d1,d2,m1,m2,y=null;
+ if(m=s.match(/(\d{1,2})\.?\s*[-–]\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})/)){d1=+m[1];d2=+m[2];m1=m2=m[3]-1;y=+m[4];}
+ else if(m=s.match(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})/)){d1=d2=+m[1];m1=m2=m[2]-1;y=+m[3];}
+ else if(m=s.match(/(\d{1,2})\s*([A-Za-z]{3})?[a-z]*\s*[-–]\s*(\d{1,2})\s*([A-Za-z]{3})/)){d1=+m[1];d2=+m[3];m2=MON[m[4].toLowerCase()];m1=m[2]?MON[m[2].toLowerCase()]:m2;}
+ else if(m=s.match(/(\d{1,2})\s*([A-Za-z]{3})/)){d1=d2=+m[1];m1=m2=MON[m[2].toLowerCase()];}
+ else return null;
+ if(m1==null||m2==null)return null;
+ const t=new Date();t.setHours(0,0,0,0);
+ let Y=y||t.getFullYear();
+ let a=new Date(Y,m1,d1),b=new Date(Y+(m2<m1?1:0),m2,d2);
+ if(!y&&b<t-14*864e5){a=new Date(Y+1,m1,d1);b=new Date(Y+1+(m2<m1?1:0),m2,d2);}
+ return {a,b,t};
+}
+function cd(i){
+ const w=parseD(i.date);if(!w)return null;
+ const n=Math.round((w.a-w.t)/864e5);
+ if(w.t>=w.a&&w.t<=w.b)return {n:0,txt:'právě probíhá'};
+ if(w.t>w.b)return {n,txt:'již proběhl'};
+ return {n,txt:n===0?'dnes':n===1?'zítra':'za '+n+' '+(n<5?'dny':'dní')};
+}
+const fin=x=>{const k=cd(x);return k&&k.txt==='již proběhl'?1:0};
+const dkey=x=>{const k=cd(x);return k==null?1e9:(k.txt==='již proběhl'?-k.n:k.n)};
+function render(){
+ const mx=parseFloat($('max').value);
+ const list=items.filter(i=>i.air!=null&&(isNaN(mx)||(i.road??i.air)<=mx))
+  .sort((a,b)=>fin(a)-fin(b)||(sortKey==='days'?dkey(a)-dkey(b):((a[sortKey]??a.air)-(b[sortKey]??b.air))));
+ layer.clearLayers();markers={};
+ L.circleMarker([start.lat,start.lon],{radius:9,color:'#fff',weight:2,fillColor:'#1a5fb4',fillOpacity:1}).addTo(layer).bindPopup('Start: '+$('start').value);
+ const pts=[[start.lat,start.lon]];
+ $('tb').innerHTML='';
+ list.forEach((i,n)=>{
+  const d=i.road??i.air,c=col(d),k=cd(i),gm='https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent($('start').value)+'&destination='+encodeURIComponent(i.addr);
+  const m=L.circleMarker([i.lat,i.lon],{radius:8,color:'#fff',weight:2,fillColor:c,fillOpacity:.95}).addTo(layer)
+   .bindPopup(`<b>${i.name}</b><br>${i.addr}<br>${i.date||''}${k?' · <b>'+k.txt+'</b>':''}<br>Vzdušně ${fmt(i.air)}, autem ${fmt(i.road)}<br><a href="${gm}" target="_blank">Trasa v Google Maps</a>`);
+  markers[n]=m;pts.push([i.lat,i.lon]);
+  const tr=document.createElement('tr');tr.className='t';
+  tr.innerHTML=`<td><b>${i.name}</b><div class="s">${i.addr}${i.date?' · '+i.date:''}</div>${k?'<div class="cd">⏱ '+k.txt+'</div>':''}<div class="s"><a href="${gm}" target="_blank" onclick="event.stopPropagation()">Trasa v Google Maps</a></div></td><td class="d" style="color:${col(i.air)}">${i.approx?'~':''}${fmt(i.air)}</td><td class="d">${fmt(i.road)}</td>`;
+  tr.onclick=()=>{map.setView([i.lat,i.lon],8);m.openPopup();};
+  $('tb').appendChild(tr);
+ });
+ const bad=items.filter(i=>i.air==null);
+ bad.forEach(i=>{const tr=document.createElement('tr');tr.innerHTML=`<td colspan="3"><b>${i.name}</b><div class="s">Adresu "${i.addr}" se nepodařilo najít</div></td>`;$('tb').appendChild(tr);});
+ if(pts.length>1) map.fitBounds(pts,{padding:[40,40]});
+}
+async function run(){
+ $('go').disabled=true;
+ SV('data',$('data').value);SV('start',$('start').value);SV('max',$('max').value);
+ $('st').textContent='Hledám výchozí bod…';
+ start=await geocode($('start').value.trim());
+ if(!start){$('st').textContent='Výchozí bod nenalezen.';$('go').disabled=false;return;}
+ items=DATA.map(x=>({...x}));
+ for(let n=0;n<items.length;n++){
+  const i=items[n];$('st').textContent=`Hledám adresy ${n+1}/${items.length}…`;
+  const g=i.lat!=null?{lat:i.lat,lon:i.lon,approx:i.approx}:await loose(i.addr);
+  if(g){Object.assign(i,g);i.air=hav(start,g);}
+ }
+ render();
+ for(let n=0;n<items.length;n++){
+  const i=items[n];if(i.air==null)continue;
+  $('st').textContent=`Počítám trasy autem ${n+1}/${items.length}…`;
+  i.road=await drive(start,i);
+ }
+ render();$('st').textContent='Hotovo.';$('go').disabled=false;
+}
+$('go').onclick=run;
+fetch('data/tournaments.json').then(r=>r.json()).then(j=>{DATA=j.tournaments;$('upd').textContent='Data aktualizována: '+new Date(j.updated).toLocaleString('cs-CZ');run();}).catch(()=>{$('st').textContent='Nepodařilo se načíst data/tournaments.json';});
+$('sort').onchange=()=>{sortKey=$('sort').value;if(start)render();};
+$('max').oninput=()=>{SV('max',$('max').value);if(start)render();};
+document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{sortKey=th.dataset.k;$('sort').value=sortKey;if(start)render();});
+</script></body></html>
