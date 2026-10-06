@@ -19,6 +19,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 #pop .t{position:absolute;width:12px;height:12px;background:var(--surface-2);transform:rotate(45deg)}
 #pop .it+.it{border-top:0.5px solid var(--border);margin-top:8px;padding-top:8px}
 #pop a,.gm{color:var(--text-accent);text-decoration:none}
+.zb{width:34px;height:34px;padding:0;font-size:18px;line-height:1;border-radius:8px}
 .chip{border-radius:999px;padding:5px 14px}
 </style></head><body>
 <div class="wrap">
@@ -34,12 +35,14 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
  </div>
 </div>
 <div id="msg" style="font-size:13px;color:var(--text-danger);min-height:0"></div>
+<div id="ask" style="display:none;background:var(--bg-accent);color:var(--text-accent);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div style="margin-bottom:10px">Chceš jako výchozí bod použít svou aktuální polohu? Prohlížeč se tě zeptá na povolení.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="askYes" type="button">Ano, použít polohu</button><button id="askNo" type="button">Ne, použít Prahu</button></div></div>
 <div id="chips" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"></div>
 <div class="grid">
  <div id="list" style="display:flex;flex-direction:column;gap:8px"></div>
- <div class="mapbox"><div id="mapwrap" style="position:relative"><div id="map" style="width:100%;min-height:240px;line-height:0"></div><div id="pop"></div></div></div>
+ <div class="mapbox"><div id="mapwrap" style="position:relative"><div id="map" style="width:100%;min-height:240px;line-height:0"></div><div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:6px;z-index:4"><button class="zb" id="zin" aria-label="Přiblížit">+</button><button class="zb" id="zout" aria-label="Oddálit">−</button><button class="zb" id="zrs" aria-label="Původní pohled" style="font-size:11px">Reset</button></div><div id="pop"></div></div></div>
 </div>
 <p id="note" style="font-size:12px;color:var(--text-muted);margin:12px 0 0"></p>
+<p style="font-size:12px;margin:6px 0 0"><a href="#" id="reask" class="gm">Znovu se zeptat na výchozí bod</a></p>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
@@ -119,34 +122,61 @@ function pinsOf(){
 }
 const chips=[['Vše',1e9],['do 600 km',600],['do 1 000 km',1000],['do 2 000 km',2000]];
 const svg=d3.select('#map').append('svg').attr('viewBox','0 0 '+W+' '+H).attr('width','100%').attr('role','img').attr('aria-label','Mapa turnajů se vzdálenostmi od výchozího bodu');
-const g=svg.append('g');
+const gMap=svg.append('g'),gPins=svg.append('g');
+let zt=d3.zoomIdentity,HM=null,H0=null,rings=[];
+svg.style('cursor','grab').style('touch-action','pan-y');
+const zoomB=d3.zoom().scaleExtent([1,12]).extent([[0,0],[W,H]]).translateExtent([[0,0],[W,H]])
+ .filter(e=>{if(e.type==='touchstart')return e.touches.length>1||zt.k>1.01;return (!e.ctrlKey||e.type==='wheel')&&!e.button;})
+ .on('zoom',e=>{zt=e.transform;gMap.attr('transform',zt);svg.style('touch-action',zt.k>1.01?'none':'pan-y');drawPins();});
+svg.call(zoomB).on('dblclick.zoom',null);
+const resetZoom=()=>{zt=d3.zoomIdentity;svg.call(zoomB.transform,d3.zoomIdentity);};
+function focusPin(id){
+ const p=P.find(x=>x.id===id);if(!p)return;
+ const q=zt.apply([p.bx,p.by]);
+ if(q[0]>24&&q[0]<W-24&&q[1]>24&&q[1]<H-24)return;
+ svg.transition().duration(450).call(zoomB.transform,d3.zoomIdentity.translate(W/2-zt.k*p.bx,H/2-zt.k*p.by).scale(zt.k));
+}
 function drawMap(){
  if(!world||!T.length)return;
- g.selectAll('*').remove();
- const HM=[start.lon,start.lat];
+ gMap.selectAll('*').remove();
+ HM=[start.lon,start.lat];
  const maxA=Math.max(200,Math.min(Math.max(...T.map(t=>t.air)),max))/R;
  proj=d3.geoAzimuthalEquidistant().rotate([-HM[0],-HM[1]]).scale(Math.min(900,148/maxA)).translate([W/2,H/2]);
  const path=d3.geoPath(proj);
- g.append('rect').attr('width',W).attr('height',H).attr('fill','var(--surface-0)').on('click',()=>{sel=null;render();});
- g.append('path').datum(topojson.feature(world,world.objects.land)).attr('d',path).attr('fill','var(--surface-2)').attr('stroke','var(--border)').attr('stroke-width',0.6).style('pointer-events','none');
- g.append('path').datum(topojson.mesh(world,world.objects.countries,(a,b)=>a!==b)).attr('d',path).attr('fill','none').attr('stroke','var(--border)').attr('stroke-width',0.5).attr('opacity',0.6).style('pointer-events','none');
+ const ne=x=>x.attr('vector-effect','non-scaling-stroke').style('pointer-events','none');
+ gMap.append('rect').attr('width',W).attr('height',H).attr('fill','var(--surface-0)').on('click',()=>{sel=null;render();});
+ ne(gMap.append('path').datum(topojson.feature(world,world.objects.land)).attr('d',path).attr('fill','var(--surface-2)').attr('stroke','var(--border)').attr('stroke-width',0.6));
+ ne(gMap.append('path').datum(topojson.mesh(world,world.objects.countries,(a,b)=>a!==b)).attr('d',path).attr('fill','none').attr('stroke','var(--border)').attr('stroke-width',0.5).attr('opacity',0.6));
  const top=Math.ceil(maxA*R/200)*200;
+ rings=[];
  for(let km=200;km<=top;km+=200){
   const major=km%1000===0;
-  g.append('path').datum(d3.geoCircle().center(HM).radius(km/111.195)()).attr('d',path).attr('fill','none').attr('stroke',major?'var(--border-strong)':'var(--border)').attr('stroke-width',major?1.2:1).attr('stroke-dasharray','2 5').style('pointer-events','none');
-  const lp=proj([HM[0],HM[1]+km/111.195]);
-  g.append('text').attr('x',lp[0]).attr('y',lp[1]-3).attr('text-anchor','middle').attr('font-size',9.5).attr('font-weight',major?500:400).attr('fill','var(--text-muted)').style('pointer-events','none').text(fmt(km)+(km===200||km===top?' km':''));
+  ne(gMap.append('path').datum(d3.geoCircle().center(HM).radius(km/111.195)()).attr('d',path).attr('fill','none').attr('stroke',major?'var(--border-strong)':'var(--border)').attr('stroke-width',major?1.2:1).attr('stroke-dasharray','2 5'));
+  rings.push({km,major,last:km===top,lp:proj([HM[0],HM[1]+km/111.195])});
  }
- const h=proj(HM);
+ H0=proj(HM);
  P=pinsOf();
+ P.forEach(p=>{const q=proj([p.lon,p.lat]);p.bx=q[0];p.by=q[1];});
+ drawPins();
+}
+function drawPins(){
+ if(!proj||!H0)return;
+ gPins.selectAll('*').remove();
  const sc=$('mapwrap').clientWidth/W||1,fs=Math.max(6.6,9/sc),k=fs/11;
+ const h=zt.apply(H0);
+ rings.forEach(r=>{
+  const q=zt.apply(r.lp);
+  if(q[0]<0||q[0]>W||q[1]<8||q[1]>H)return;
+  gPins.append('text').attr('x',q[0]).attr('y',q[1]-3).attr('text-anchor','middle').attr('font-size',9.5).attr('font-weight',r.major?500:400).attr('fill','var(--text-muted)').style('pointer-events','none').text(fmt(r.km)+(r.km===200||r.last?' km':''));
+ });
  P.forEach(p=>{
-  const q=proj([p.lon,p.lat]);let x=q[0],y=q[1];
+  const q=zt.apply([p.bx,p.by]);let x=q[0],y=q[1];
   if(Math.hypot(x-h[0],y-h[1])<14){x=h[0]+12;y=h[1]-12;}
   p.x=x;p.y=y;
   if(p.v>max)return;
-  const on=true,isSel=sel===p.id,c='var(--fill-'+col(p.v)+')';
-  const grp=g.append('g').attr('opacity',!on?0.15:(sel&&!isSel?0.4:1)).style('cursor','pointer').on('click',e=>{e.stopPropagation();sel=(sel===p.id?null:p.id);render();});
+  if(x<-20||x>W+20||y<-20||y>H+20)return;
+  const isSel=sel===p.id,c='var(--fill-'+col(p.v)+')';
+  const grp=gPins.append('g').attr('opacity',sel&&!isSel?0.4:1).style('cursor','pointer').on('click',e=>{e.stopPropagation();sel=(sel===p.id?null:p.id);render();});
   grp.append('path').attr('d','M'+h[0]+','+h[1]+' Q'+((h[0]+x)/2-(y-h[1])*0.18)+','+((h[1]+y)/2+(x-h[0])*0.18)+' '+x+','+y).attr('fill','none').attr('stroke',c).attr('stroke-width',isSel?2.5:1.5).attr('stroke-linecap','round').attr('opacity',0.6);
   grp.append('circle').attr('cx',x).attr('cy',y).attr('r',isSel?15:11).attr('fill',c).attr('opacity',0.2);
   grp.append('circle').attr('cx',x).attr('cy',y).attr('r',isSel?7.5:5.5).attr('fill',c).attr('stroke','var(--surface-2)').attr('stroke-width',2);
@@ -158,9 +188,9 @@ function drawMap(){
   grp.insert('rect','text').attr('x',rx).attr('y',ry).attr('width',w).attr('height',hh).attr('rx',hh/2).attr('fill','var(--surface-2)').attr('stroke',isSel?'var(--border-accent)':'var(--border-strong)').attr('stroke-width',isSel?1.5:0.5);
   tx.attr('x',rx+8*k).attr('y',ry+hh/2+4*k);
  });
- g.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',13).attr('fill','var(--fill-accent)').attr('opacity',0.2).style('pointer-events','none');
- g.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',7).attr('fill','var(--fill-accent)').attr('stroke','var(--surface-2)').attr('stroke-width',2.5).style('pointer-events','none');
- g.append('text').attr('x',h[0]).attr('y',h[1]+26).attr('text-anchor','middle').attr('font-size',12).attr('font-weight',500).attr('fill','var(--text-primary)').style('pointer-events','none').text(start.name);
+ gPins.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',13).attr('fill','var(--fill-accent)').attr('opacity',0.2).style('pointer-events','none');
+ gPins.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',7).attr('fill','var(--fill-accent)').attr('stroke','var(--surface-2)').attr('stroke-width',2.5).style('pointer-events','none');
+ gPins.append('text').attr('x',h[0]).attr('y',h[1]+26).attr('text-anchor','middle').attr('font-size',12).attr('font-weight',500).attr('fill','var(--text-primary)').style('pointer-events','none').text(start.name);
  showPop();
 }
 const gmaps=t=>'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent(start.name)+'&destination='+encodeURIComponent(t.addr);
@@ -201,7 +231,7 @@ function render(){
    ${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:'<span></span>'}
    <a class="gm" href="${gmaps(t)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Trasa v Google Maps ↗</a>
   </div></div>`;}).join('');
- document.querySelectorAll('#list [data-id]').forEach(el=>el.onclick=()=>{sel=(sel===el.dataset.id?null:el.dataset.id);render();if(window.innerWidth<=820)$('map').scrollIntoView({behavior:'smooth',block:'nearest'});});
+ document.querySelectorAll('#list [data-id]').forEach(el=>el.onclick=()=>{sel=(sel===el.dataset.id?null:el.dataset.id);render();if(sel)focusPin(sel);if(window.innerWidth<=820)$('map').scrollIntoView({behavior:'smooth',block:'nearest'});});
  $('note').textContent=(skipped?skipped+' turnajů se nepodařilo umístit na mapu. ':'')+'Klikni na kartu nebo bod na mapě pro detail. Kruhy na mapě jsou po 200 km vzdušnou čarou.';
  drawMap();
 }
@@ -210,17 +240,36 @@ async function setStart(q){
  try{
   const j=await (await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q))).json();
   if(!j[0]){$('msg').textContent='Místo „'+q+'“ se nepodařilo najít.';return;}
-  start={name:q,lat:+j[0].lat,lon:+j[0].lon};SV('start',start);sel=null;recalc();
+  start={name:q,lat:+j[0].lat,lon:+j[0].lon};SV('start',start);sel=null;resetZoom();recalc();
  }catch(e){$('msg').textContent='Hledání místa selhalo, zkus to znovu.';}
 }
 $('start').value=start.name;
 $('sf').onsubmit=e=>{e.preventDefault();const q=$('start').value.trim();if(q)setStart(q);};
-$('geo').onclick=()=>{
- if(!navigator.geolocation){$('msg').textContent='Prohlížeč nepodporuje zjištění polohy.';return;}
- navigator.geolocation.getCurrentPosition(p=>{start={name:'Moje poloha',lat:p.coords.latitude,lon:p.coords.longitude};SV('start',start);$('start').value='Moje poloha';sel=null;recalc();},()=>{$('msg').textContent='Polohu se nepodařilo zjistit.';});
+function useGeo(){
+ return new Promise(res=>{
+  if(!navigator.geolocation){res(false);return;}
+  navigator.geolocation.getCurrentPosition(p=>{
+   start={name:'Moje poloha',lat:p.coords.latitude,lon:p.coords.longitude};
+   $('start').value='Moje poloha';sel=null;resetZoom();recalc();res(true);
+  },()=>res(false),{timeout:12000,maximumAge:600000});
+ });
+}
+function usePraha(){start={name:'Praha',lon:14.43,lat:50.08};$('start').value='Praha';sel=null;resetZoom();recalc();}
+$('geo').onclick=()=>{$('msg').textContent='';useGeo().then(ok=>{if(!ok)$('msg').textContent='Polohu se nepodařilo zjistit. Zkontroluj, že je povolená.';});};
+$('askYes').onclick=()=>{
+ SV('startChoice','geo');$('ask').style.display='none';$('msg').textContent='';
+ useGeo().then(ok=>{if(!ok){SV('startChoice','praha');usePraha();$('msg').textContent='Polohu se nepodařilo zjistit nebo nebyla povolena, použita Praha.';}});
 };
+$('askNo').onclick=()=>{SV('startChoice','praha');$('ask').style.display='none';usePraha();};
+$('reask').onclick=e=>{e.preventDefault();SV('startChoice',null);$('ask').style.display='block';$('ask').scrollIntoView({behavior:'smooth',block:'nearest'});};
+const choice=LS('startChoice');
+if(choice==='geo'){useGeo().then(ok=>{if(!ok){usePraha();$('msg').textContent='Polohu se nepodařilo zjistit, použita Praha.';}});}
+else if(!choice){$('ask').style.display='block';}
 $('sort').onchange=e=>{sortKey=e.target.value;render();};
-window.addEventListener('resize',showPop);
+window.addEventListener('resize',drawPins);
+$('zin').onclick=()=>svg.transition().duration(250).call(zoomB.scaleBy,1.7);
+$('zout').onclick=()=>svg.transition().duration(250).call(zoomB.scaleBy,1/1.7);
+$('zrs').onclick=()=>svg.transition().duration(250).call(zoomB.transform,d3.zoomIdentity);
 fetch('data/tournaments.json').then(r=>r.json()).then(prepare).catch(()=>{$('upd').textContent='Data se nepodařilo načíst';});
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w=>{world=w;drawMap();}).catch(()=>{$('map').innerHTML='<p style="font-size:13px;color:var(--text-secondary);padding:12px;line-height:1.5">Mapu se nepodařilo načíst.</p>';});
 </script></body></html>
