@@ -165,6 +165,22 @@ function drawMap(){
  P.forEach(p=>{const q=proj([p.lon,p.lat]);p.bx=q[0];p.by=q[1];});
  drawPins();
 }
+function layoutLabels(labels,H){
+ labels.sort((a,b)=>a.ry-b.ry);
+ const placed=[];
+ labels.forEach(l=>{
+  let moved=true,guard=0;
+  while(moved&&guard++<60){
+   moved=false;
+   for(const q of placed){
+    if(l.rx<q.rx+q.w+2&&l.rx+l.w+2>q.rx&&l.ry<q.ry+q.hh+2&&l.ry+l.hh+2>q.ry){l.ry=q.ry+q.hh+3;moved=true;}
+   }
+  }
+  l.ry=Math.min(l.ry,H-l.hh-4);
+  placed.push(l);
+ });
+ return labels;
+}
 function drawPins(){
  if(!proj||!H0)return;
  gPins.selectAll('*').remove();
@@ -175,6 +191,7 @@ function drawPins(){
   if(q[0]<0||q[0]>W||q[1]<8||q[1]>H)return;
   gPins.append('text').attr('x',q[0]).attr('y',q[1]-3).attr('text-anchor','middle').attr('font-size',9.5).attr('font-weight',r.major?500:400).attr('fill','var(--text-muted)').style('pointer-events','none').text(fmt(r.km)+(r.first||r.last?' km':''));
  });
+ const labels=[];
  P.forEach(p=>{
   const q=zt.apply([p.bx,p.by]);let x=q[0],y=q[1];
   if(Math.hypot(x-h[0],y-h[1])<14){x=h[0]+12;y=h[1]-12;}
@@ -191,8 +208,15 @@ function drawPins(){
   let rx,ry;
   if(Math.abs(dx)>Math.abs(dy)){ry=y-hh/2;rx=dx>0?x+12*k:x-w-12*k;}else{rx=x-w/2;ry=dy>0?y+12*k:y-hh-12*k;}
   rx=Math.max(4,Math.min(W-w-4,rx));ry=Math.max(4,Math.min(H-hh-4,ry));
-  grp.insert('rect','text').attr('x',rx).attr('y',ry).attr('width',w).attr('height',hh).attr('rx',hh/2).attr('fill','var(--surface-2)').attr('stroke',isSel?'var(--border-accent)':'var(--border-strong)').attr('stroke-width',isSel?1.5:0.5);
-  tx.attr('x',rx+8*k).attr('y',ry+hh/2+4*k);
+  labels.push({grp,tx,w,hh,rx,ry,ry0:ry,x,y,isSel,k});
+ });
+ layoutLabels(labels,H).forEach(l=>{
+  if(Math.abs(l.ry-l.ry0)>2){
+   const cx=Math.max(l.rx,Math.min(l.rx+l.w,l.x)),cy=Math.max(l.ry,Math.min(l.ry+l.hh,l.y));
+   l.grp.insert('line',':first-child').attr('x1',l.x).attr('y1',l.y).attr('x2',cx).attr('y2',cy).attr('stroke','var(--text-muted)').attr('stroke-width',0.8).attr('opacity',0.8);
+  }
+  l.grp.insert('rect','text').attr('x',l.rx).attr('y',l.ry).attr('width',l.w).attr('height',l.hh).attr('rx',l.hh/2).attr('fill','var(--surface-2)').attr('stroke',l.isSel?'var(--border-accent)':'var(--border-strong)').attr('stroke-width',l.isSel?1.5:0.5);
+  l.tx.attr('x',l.rx+8*l.k).attr('y',l.ry+l.hh/2+4*l.k);
  });
  gPins.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',13).attr('fill','var(--fill-accent)').attr('opacity',0.2).style('pointer-events','none');
  gPins.append('circle').attr('cx',h[0]).attr('cy',h[1]).attr('r',7).attr('fill','var(--fill-accent)').attr('stroke','var(--surface-2)').attr('stroke-width',2.5).style('pointer-events','none');
