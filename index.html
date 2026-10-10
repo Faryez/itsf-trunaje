@@ -37,6 +37,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 <div id="msg" style="font-size:13px;color:var(--text-danger);min-height:0"></div>
 <div id="ask" style="display:none;background:var(--bg-accent);color:var(--text-accent);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div style="margin-bottom:10px">Chceš jako výchozí bod použít svou aktuální polohu? Prohlížeč se tě zeptá na povolení.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="askYes" type="button">Ano, použít polohu</button><button id="askNo" type="button">Ne, použít Prahu</button></div></div>
 <div id="chips" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"></div>
+<div id="tchips" style="display:none;gap:8px;margin:-4px 0 14px;flex-wrap:wrap;align-items:center"></div>
 <div class="grid">
  <div id="list" style="display:flex;flex-direction:column;gap:8px"></div>
  <div class="mapbox"><div id="mapwrap" style="position:relative"><div id="map" style="width:100%;min-height:240px;line-height:0"></div><div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:6px;z-index:4"><button class="zb" id="zin" aria-label="Přiblížit">+</button><button class="zb" id="zout" aria-label="Oddálit">−</button><button class="zb" id="zrs" aria-label="Původní pohled" style="font-size:11px">Reset</button></div><div id="pop"></div></div></div>
@@ -54,9 +55,11 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const R=6371,W=400,H=380;
 const roadC=LS('road')||{};
 let start={name:'Praha',lon:14.43,lat:50.08};
-let T=[],P=[],max=600,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
+let T=[],P=[],max=600,tbl=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
 const hav=(a,b)=>{const r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const x=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const val=t=>t.road??t.air;
+const tlow=t=>(t.table||'').trim().toLowerCase();
+const vis=t=>val(t)<=max&&(!tbl||tlow(t)===tbl);
 const col=k=>k<300?'success':k<600?'warning':'danger';
 const fmt=n=>Math.round(n).toLocaleString('cs-CZ').replace(/\u00a0/g,' ');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -118,7 +121,7 @@ function recalc(){
 function pinsOf(){
  const m=new Map();
  T.forEach(t=>{if(!m.has(t.id))m.set(t.id,{id:t.id,lat:t.lat,lon:t.lon,items:[]});m.get(t.id).items.push(t);});
- return [...m.values()].map(p=>{p.v=Math.min(...p.items.map(val));p.label=cityOf(p.items[0])+(p.items.length>1?' ('+p.items.length+')':'');return p;});
+ return [...m.values()].map(p=>{const vi=p.items.filter(vis);p.vis=vi;p.v=vi.length?Math.min(...vi.map(val)):1e9;p.label=cityOf(p.items[0])+(vi.length>1?' ('+vi.length+')':'');return p;});
 }
 const chips=[['Vše',1e9],['do 600 km',600],['do 1 000 km',1000],['do 2 000 km',2000]];
 const svg=d3.select('#map').append('svg').attr('viewBox','0 0 '+W+' '+H).attr('width','100%').attr('role','img').attr('aria-label','Mapa turnajů se vzdálenostmi od výchozího bodu');
@@ -173,7 +176,7 @@ function drawPins(){
   const q=zt.apply([p.bx,p.by]);let x=q[0],y=q[1];
   if(Math.hypot(x-h[0],y-h[1])<14){x=h[0]+12;y=h[1]-12;}
   p.x=x;p.y=y;
-  if(p.v>max)return;
+  if(!p.vis.length)return;
   if(x<-20||x>W+20||y<-20||y>H+20)return;
   const isSel=sel===p.id,c='var(--fill-'+col(p.v)+')';
   const grp=gPins.append('g').attr('opacity',sel&&!isSel?0.4:1).style('cursor','pointer').on('click',e=>{e.stopPropagation();sel=(sel===p.id?null:p.id);render();});
@@ -197,9 +200,9 @@ const gmaps=t=>'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin
 function showPop(){
  const pop=$('pop');pop.style.display='none';pop.innerHTML='';
  const p=P.find(x=>x.id===sel);
- if(!p||!proj)return;
+ if(!p||!proj||!p.vis.length)return;
  const wrap=$('mapwrap'),sc=wrap.clientWidth/W;
- pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.items.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div><div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km, autem ${t.road==null?'…':fmt(t.road)+' km'}${t.approx?' (poloha jen přibližně)':''}</div>${t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a> · ':''}<a href="${gmaps(t)}" target="_blank" rel="noopener">Trasa v Google Maps</a></div>`).join('')+'<div class="t" id="pt"></div>';
+ pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.vis.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div>${t.table?'<div>'+esc(t.table)+'</div>':''}<div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km, autem ${t.road==null?'…':fmt(t.road)+' km'}${t.approx?' (poloha jen přibližně)':''}</div>${t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a> · ':''}<a href="${gmaps(t)}" target="_blank" rel="noopener">Trasa v Google Maps</a></div>`).join('')+'<div class="t" id="pt"></div>';
  pop.style.display='block';
  const pw=pop.offsetWidth,ph=pop.offsetHeight,cw=wrap.clientWidth,px=p.x*sc,py=p.y*sc;
  const left=Math.max(4,Math.min(cw-pw-4,px-pw/2));
@@ -214,7 +217,11 @@ function showPop(){
 function render(){
  $('chips').innerHTML=chips.map(c=>`<button class="chip" data-m="${c[1]}" style="${c[1]===max?'background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)':''}">${c[0]}</button>`).join('');
  document.querySelectorAll('#chips button').forEach(b=>b.onclick=()=>{max=+b.dataset.m;render();});
- const L=T.filter(t=>val(t)<=max).sort((a,b)=>{
+ const tm=new Map();T.forEach(t=>{if(t.table&&t.table.trim())tm.set(tlow(t),t.table.trim());});
+ const tb=[...tm.entries()].sort((a,b)=>a[1].localeCompare(b[1]));
+ const tc=$('tchips');
+ if(tb.length){tc.style.display='flex';tc.innerHTML='<span style="font-size:12px;color:var(--text-secondary)">Stůl:</span>'+[['','Vše'],...tb].map(([k,n])=>`<button class="chip" data-t="${esc(k)}" style="${(tbl||'')===k?'background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)':''}">${esc(n)}</button>`).join('');document.querySelectorAll('#tchips button').forEach(b=>b.onclick=()=>{tbl=b.dataset.t||null;render();});}else tc.style.display='none';
+ const L=T.filter(vis).sort((a,b)=>{
   const fa=a.cd.n===1e8?1:0,fb=b.cd.n===1e8?1:0;
   return fa-fb||(sortKey==='km'?val(a)-val(b):a.cd.n-b.cd.n||val(a)-val(b));
  });
@@ -228,7 +235,7 @@ function render(){
    <div style="text-align:right;white-space:nowrap"><div style="font-size:15px;font-weight:500;color:var(--text-${col(val(t))})">${t.approx?'~':''}${fmt(val(t))} km</div><div style="font-size:11px;color:var(--text-muted)">${t.road==null?'vzdušně':'autem'}</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-   ${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:'<span></span>'}
+   <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:''}${t.table?`<span style="font-size:12px;border:0.5px solid var(--border-strong);padding:2px 10px;border-radius:999px">${esc(t.table)}</span>`:''}</span>
    <span style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end">${t.url?`<a class="gm" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Odkaz na turnaj ↗</a>`:''}<a class="gm" href="${gmaps(t)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Trasa v Google Maps ↗</a></span>
   </div></div>`;}).join('');
  document.querySelectorAll('#list [data-id]').forEach(el=>el.onclick=()=>{sel=(sel===el.dataset.id?null:el.dataset.id);render();if(sel)focusPin(sel);if(window.innerWidth<=820)$('map').scrollIntoView({behavior:'smooth',block:'nearest'});});
