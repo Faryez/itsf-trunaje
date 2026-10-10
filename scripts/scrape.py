@@ -1,4 +1,4 @@
-import io, json, re, sys, time, datetime, pathlib, urllib.request, urllib.parse
+import io, json, re, sys, time, datetime, pathlib, unicodedata, urllib.request, urllib.parse
 import pycountry
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
@@ -290,6 +290,47 @@ def scrape_p4p():
     return items
 
 
+def name_tokens(name):
+    n = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().lower()
+    toks = re.findall(r"[a-z0-9]+", n)
+    return {t for t in toks if t != "itsf" and not re.search(r"\d", t)}
+
+
+def same_name(a, b):
+    ta, tb = name_tokens(a), name_tokens(b)
+    inter = ta & tb
+    return len(inter) >= 2 and len(inter) / min(len(ta), len(tb)) >= 0.8
+
+
+def merge(out):
+    """Slouci duplicity. Stejny turnaj = podobny nazev (po odstraneni roku, cisel a slova ITSF)
+    a zaroven zacatek v rozmezi 3 dnu, nebo stejny zacatek a vzdalenost do 40 km.
+    Priorita zdroju pri konfliktu: ITSF > World Foosball Tour > P4P. Vitezny zaznam si ponecha vsechna data,
+    ostatni zdroje se jen pripisou do 'sources'."""
+    merged = []
+    for t in out:
+        rng = to_range(t["date"])
+        dup = None
+        if rng:
+            for m in merged:
+                mr = to_range(m["date"])
+                if not mr:
+                    continue
+                days = abs((mr[0] - rng[0]).days)
+                near = (m.get("lat") is not None and t.get("lat") is not None
+                        and hav((m["lat"], m["lon"]), (t["lat"], t["lon"])) < 40)
+                if (days <= 3 and same_name(m["name"], t["name"])) or (days == 0 and near):
+                    dup = m
+                    break
+        if dup:
+            for src in t["sources"]:
+                if src not in dup["sources"]:
+                    dup["sources"].append(src)
+        else:
+            merged.append(t)
+    return merged
+
+
 # ---------- hlavni beh ----------
 def main():
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
@@ -328,23 +369,7 @@ def main():
         else:
             out += [t for t in old_items if t.get("sources", [S_ITSF]) == [src]]
 
-    # sloucit duplicity: stejny zacatek a vzdalenost do 40 km (prednost ITSF > WFT > P4P)
-    merged = []
-    for t in out:
-        rng = to_range(t["date"])
-        dup = None
-        if rng and t.get("lat") is not None:
-            for m in merged:
-                mr = to_range(m["date"])
-                if mr and mr[0] == rng[0] and m.get("lat") is not None and hav((m["lat"], m["lon"]), (t["lat"], t["lon"])) < 40:
-                    dup = m
-                    break
-        if dup:
-            for s in t["sources"]:
-                if s not in dup["sources"]:
-                    dup["sources"].append(s)
-        else:
-            merged.append(t)
+    merged = merge(out)
 
     OUT.write_text(json.dumps({"updated": datetime.datetime.utcnow().isoformat() + "Z", "tournaments": merged},
                               ensure_ascii=False, indent=1))
