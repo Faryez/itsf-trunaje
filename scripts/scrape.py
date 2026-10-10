@@ -21,7 +21,11 @@ LIST_JS = r"""() => {
 ADDR_JS = """() => {
  const L=document.body.innerText.split(/[\\n\\t]+/).map(x=>x.trim()).filter(Boolean);
  const i=L.lastIndexOf('Address');
- return i>=0&&L[i+1]?L[i+1]:'';
+ const c=L.indexOf('Category');
+ const j=L.indexOf('Table',c>=0?c:0);
+ let table=j>=0&&L[j+1]?L[j+1]:'';
+ if(['Start','End','Timezone','Contact','Address','Status','Info Package'].includes(table))table='';
+ return {addr:i>=0&&L[i+1]?L[i+1]:'',table};
 }"""
 
 def country(cc):
@@ -76,12 +80,15 @@ with sync_playwright() as p:
     for r in rows:
         m = re.search(r"/p/([A-Za-z0-9]+)", r["url"] or "")
         r["addr"] = ""
+        r["table"] = ""
         if not m:
             continue
         try:
             page.goto(f"{BASE}/p/{m.group(1)}/t", wait_until="domcontentloaded")
             page.wait_for_function("document.body.innerText.includes('Address')", timeout=15000)
-            r["addr"] = page.evaluate(ADDR_JS)
+            res = page.evaluate(ADDR_JS)
+            r["addr"] = res["addr"]
+            r["table"] = (res["table"] or "").strip()
         except Exception as e:
             print("no address:", r["name"], e)
     b.close()
@@ -95,7 +102,7 @@ for r in rows:
     g = loose(addr) or {}
     m = re.search(r"/p/([A-Za-z0-9]+)", r["url"] or "")
     url = f"{BASE}/p/{m.group(1)}" if m else ""
-    out.append({"name": r["name"], "addr": addr, "date": r["date"], "url": url, **g})
+    out.append({"name": r["name"], "addr": addr, "date": r["date"], "url": url, "table": r.get("table", ""), **g})
     CACHE.write_text(json.dumps(cache, ensure_ascii=False))
 
 OUT.write_text(json.dumps({"updated": datetime.datetime.utcnow().isoformat() + "Z", "tournaments": out}, ensure_ascii=False, indent=1))
