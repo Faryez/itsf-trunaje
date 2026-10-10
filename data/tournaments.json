@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10T20:23:11.241800Z",
+ "updated": "2026-10-10T20:34:54.828829Z",
  "tournaments": [
   {
    "name": "Ricardo Lopes Cup 2026",
@@ -303,16 +303,16 @@
   },
   {
    "name": "WFT International Championships of Foosball",
-   "addr": "Vienna, Austria",
+   "addr": "Stage 3, Lilienthalgasse 6, 1030 Vienna, Austria",
    "date": "25 - 29 Nov 2026",
    "url": "https://worldfoosballtour.com/pages/wft-international-championships-2026",
    "table": "",
    "sources": [
     "World Foosball Tour"
    ],
-   "lat": 48.2083537,
-   "lon": 16.3725042,
-   "approx": true
+   "lat": 48.1803091,
+   "lon": 16.3951959,
+   "approx": false
   },
   {
    "name": "North Carolina State Championship",
