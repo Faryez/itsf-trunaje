@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10T20:13:55.473872Z",
+ "updated": "2026-10-10T20:20:33.515422Z",
  "tournaments": [
   {
    "name": "Ricardo Lopes Cup 2026",
@@ -10,8 +10,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 40.3091877,
-   "lon": -7.4925973,
+   "lat": 40.3092027,
+   "lon": -7.4926777,
    "approx": false
   },
   {
@@ -36,9 +36,9 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 41.3847691,
-   "lon": -8.4531769,
-   "approx": true
+   "lat": 41.3877866,
+   "lon": -8.4509779,
+   "approx": false
   },
   {
    "name": "World Series Leonhart 2026",
@@ -49,8 +49,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 49.2303293,
-   "lon": 7.0151193,
+   "lat": 49.230346,
+   "lon": 7.015143,
    "approx": false
   },
   {
@@ -62,8 +62,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 45.344694,
-   "lon": -75.7316559,
+   "lat": 45.345296,
+   "lon": -75.731501,
    "approx": false
   },
   {
@@ -75,8 +75,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 50.1323816,
-   "lon": 14.4756948,
+   "lat": 50.13239770000001,
+   "lon": 14.4756716,
    "approx": false
   },
   {
@@ -101,8 +101,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 48.7406406,
-   "lon": 21.2434075,
+   "lat": 48.7402476,
+   "lon": 21.2461172,
    "approx": false
   },
   {
@@ -114,8 +114,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 51.120293,
-   "lon": 17.0270025,
+   "lat": 51.1202654,
+   "lon": 17.0270071,
    "approx": false
   },
   {
@@ -127,8 +127,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 21.092704,
-   "lon": -86.7706697,
+   "lat": 21.098288,
+   "lon": -86.76689990000001,
    "approx": false
   },
   {
@@ -140,8 +140,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 44.4442736,
-   "lon": 26.0518318,
+   "lat": 44.4441688,
+   "lon": 26.0498686,
    "approx": false
   },
   {
@@ -153,8 +153,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 42.6634495,
-   "lon": 23.3433936,
+   "lat": 42.663465,
+   "lon": 23.343378,
    "approx": false
   },
   {
@@ -166,9 +166,9 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 45.831996,
-   "lon": 16.1098955,
-   "approx": true
+   "lat": 45.8221114,
+   "lon": 16.1044112,
+   "approx": false
   },
   {
    "name": "P4P Ullrich Championship 2026 - ITSF 500",
@@ -180,9 +180,9 @@
     "ITSF",
     "P4P"
    ],
-   "lat": 49.1752971,
-   "lon": 10.321351,
-   "approx": true
+   "lat": 49.1727504,
+   "lon": 10.2531552,
+   "approx": false
   },
   {
    "name": "INTERNATIONAL MASTER'S TOUR INDIA 2026",
@@ -193,8 +193,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 30.3843674,
-   "lon": 76.770421,
+   "lat": 30.3752011,
+   "lon": 76.782122,
    "approx": false
   },
   {
@@ -206,8 +206,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 46.841558,
-   "lon": -71.2179809,
+   "lat": 46.841678,
+   "lon": -71.218309,
    "approx": false
   },
   {
@@ -219,8 +219,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 48.1177841,
-   "lon": 17.1041763,
+   "lat": 48.1177374,
+   "lon": 17.1041712,
    "approx": false
   },
   {
@@ -232,8 +232,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 50.4537309,
-   "lon": 1.7515978,
+   "lat": 50.453451,
+   "lon": 1.761175,
    "approx": false
   },
   {
@@ -245,8 +245,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 52.5337603,
-   "lon": 13.3379308,
+   "lat": 52.5339014,
+   "lon": 13.3380251,
    "approx": false
   },
   {
@@ -258,8 +258,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 52.364499,
-   "lon": 4.9613801,
+   "lat": 52.365312,
+   "lon": 4.9594958,
    "approx": false
   },
   {
@@ -271,8 +271,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 56.144009,
-   "lon": 10.198238,
+   "lat": 56.144062,
+   "lon": 10.1981182,
    "approx": false
   },
   {
@@ -284,8 +284,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": -1.252604,
-   "lon": 36.8859094,
+   "lat": -1.2566229,
+   "lon": 36.8802269,
    "approx": false
   },
   {
