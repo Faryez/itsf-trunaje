@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10T19:25:28.725378Z",
+ "updated": "2026-10-10T20:03:19.058057Z",
  "tournaments": [
   {
    "name": "Ricardo Lopes Cup 2026",
@@ -7,6 +7,9 @@
    "date": "3 - 4 Oct",
    "url": "https://app.tablesoccer.org/p/6R3X47",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 40.3091877,
    "lon": -7.4925973,
    "approx": false
@@ -17,6 +20,9 @@
    "date": "9 - 10 Oct",
    "url": "https://app.tablesoccer.org/p/6ELR9Z",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 42.1005064,
    "lon": -1.7753164,
    "approx": true
@@ -27,6 +33,9 @@
    "date": "10 Oct",
    "url": "https://app.tablesoccer.org/p/7DO28Z",
    "table": "",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 41.3847691,
    "lon": -8.4531769,
    "approx": true
@@ -37,16 +46,9 @@
    "date": "14 - 18 Oct",
    "url": "https://app.tablesoccer.org/p/ZBYNP6",
    "table": "Leonhart",
-   "lat": 49.2303293,
-   "lon": 7.0151193,
-   "approx": false
-  },
-  {
-   "name": "ITSF Gold Finals 2026",
-   "addr": "Halbergstraße 84, 66121, Saarbrücken, Germany",
-   "date": "14 Oct",
-   "url": "https://app.tablesoccer.org/p/6JG336",
-   "table": "",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 49.2303293,
    "lon": 7.0151193,
    "approx": false
@@ -54,9 +56,12 @@
   {
    "name": "2026 OTTAWA FALL OPEN",
    "addr": "Merivale Road 1642, K2G 4A1, Nepean, Nepean, Canada",
-   "date": "2026 OTTAWA FALL OPEN",
+   "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/6AYOB6",
    "table": "Tornado",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 45.344694,
    "lon": -75.7316559,
    "approx": false
@@ -67,6 +72,9 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/ZVKGP7",
    "table": "Rosengart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 50.1323816,
    "lon": 14.4756948,
    "approx": false
@@ -77,6 +85,9 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/6P3XRZ",
    "table": "Garlando",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 45.9852129,
    "lon": 24.6859225,
    "approx": true
@@ -87,6 +98,9 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/692DK7",
    "table": "Rosengart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 48.7406406,
    "lon": 21.2434075,
    "approx": false
@@ -97,6 +111,9 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/7NPQ8Z",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 51.120293,
    "lon": 17.0270025,
    "approx": false
@@ -107,6 +124,9 @@
    "date": "29 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/7NPEPZ",
    "table": "",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 21.092704,
    "lon": -86.7706697,
    "approx": false
@@ -117,6 +137,9 @@
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/Z4N4W6",
    "table": "Bonzini",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 44.4442736,
    "lon": 26.0518318,
    "approx": false
@@ -127,6 +150,9 @@
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/6J35QZ",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 42.6634495,
    "lon": 23.3433936,
    "approx": false
@@ -137,6 +163,9 @@
    "date": "6 - 7 Nov",
    "url": "https://app.tablesoccer.org/p/Z4NQ26",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 45.831996,
    "lon": 16.1098955,
    "approx": true
@@ -147,6 +176,10 @@
    "date": "6 - 8 Nov",
    "url": "https://app.tablesoccer.org/p/6PDW56",
    "table": "Ullrich Kicker",
+   "sources": [
+    "ITSF",
+    "P4P"
+   ],
    "lat": 49.1752971,
    "lon": 10.321351,
    "approx": true
@@ -157,6 +190,9 @@
    "date": "12 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/6JGQQ6",
    "table": "",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 30.3843674,
    "lon": 76.770421,
    "approx": false
@@ -167,6 +203,9 @@
    "date": "13 - 16 Nov",
    "url": "https://app.tablesoccer.org/p/ZWL837",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 46.841558,
    "lon": -71.2179809,
    "approx": false
@@ -177,6 +216,9 @@
    "date": "13 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/Z8RV46",
    "table": "Tornado",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 48.1177841,
    "lon": 17.1041763,
    "approx": false
@@ -187,6 +229,9 @@
    "date": "14 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/ZB8Y36",
    "table": "Bonzini",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 50.4537309,
    "lon": 1.7515978,
    "approx": false
@@ -197,6 +242,9 @@
    "date": "14 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/ZWL237",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 52.5337603,
    "lon": 13.3379308,
    "approx": false
@@ -207,6 +255,9 @@
    "date": "14 Nov",
    "url": "https://app.tablesoccer.org/p/6R3W47",
    "table": "Leonhart",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 52.364499,
    "lon": 4.9613801,
    "approx": false
@@ -217,6 +268,9 @@
    "date": "20 - 21 Nov",
    "url": "https://app.tablesoccer.org/p/ZYKNO7",
    "table": "Bonzini",
+   "sources": [
+    "ITSF"
+   ],
    "lat": 56.144009,
    "lon": 10.198238,
    "approx": false
@@ -227,9 +281,220 @@
    "date": "5 Dec",
    "url": "https://app.tablesoccer.org/p/7DOBYZ",
    "table": "Other",
+   "sources": [
+    "ITSF"
+   ],
    "lat": -1.252604,
    "lon": 36.8859094,
    "approx": false
+  },
+  {
+   "name": "Great Lakes Classic",
+   "addr": "Grand Rapids, MI, USA",
+   "date": "15 - 18 Oct 2026",
+   "url": "https://worldfoosballtour.com/pages/great-lakes-classic-2026",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 42.9632425,
+   "lon": -85.6678639,
+   "approx": true
+  },
+  {
+   "name": "WFT International Championships of Foosball",
+   "addr": "Vienna, Austria",
+   "date": "25 - 29 Nov 2026",
+   "url": "https://worldfoosballtour.com/pages/wft-international-championships-2026",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 48.2083537,
+   "lon": 16.3725042,
+   "approx": true
+  },
+  {
+   "name": "North Carolina State Championship",
+   "addr": "Asheville, NC, USA",
+   "date": "26 - 29 Nov 2026",
+   "url": "https://worldfoosballtour.com/pages/2026-north-carolina-state-championships",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 35.595363,
+   "lon": -82.5508407,
+   "approx": true
+  },
+  {
+   "name": "Louisiana State Championship",
+   "addr": "New Orleans, LA, USA",
+   "date": "3 - 6 Dec 2026",
+   "url": "https://worldfoosballtour.com/pages/2026-louisiana-state",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 29.9574657,
+   "lon": -90.0629493,
+   "approx": true
+  },
+  {
+   "name": "WFT Tour Kick-Off 2027",
+   "addr": "Nashville, TN, USA",
+   "date": "4 - 7 Feb 2027",
+   "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 36.1622767,
+   "lon": -86.7742984,
+   "approx": true
+  },
+  {
+   "name": "South Dakota State Championship",
+   "addr": "Flandreau, SD, USA",
+   "date": "26 - 28 Feb 2027",
+   "url": "https://worldfoosballtour.com/pages/south-dakota-2027",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 44.049416,
+   "lon": -96.595324,
+   "approx": true
+  },
+  {
+   "name": "Wisconsin State Championship",
+   "addr": "Appleton, WI, USA",
+   "date": "18 - 21 Mar 2027",
+   "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 44.2613967,
+   "lon": -88.4069744,
+   "approx": true
+  },
+  {
+   "name": "WFT Hall Of Fame Classic 2027",
+   "addr": "Las Vegas, NV, USA",
+   "date": "7 - 11 Apr 2027",
+   "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 36.1674263,
+   "lon": -115.1484131,
+   "approx": true
+  },
+  {
+   "name": "Illinois State Championship",
+   "addr": "Hoffman Estates, IL, USA",
+   "date": "22 - 25 Apr 2027",
+   "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 42.0427256,
+   "lon": -88.0792782,
+   "approx": true
+  },
+  {
+   "name": "Mississippi State Championship",
+   "addr": "Pearl, MS, USA",
+   "date": "23 - 25 Jul 2027",
+   "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 32.2735792,
+   "lon": -90.127881,
+   "approx": true
+  },
+  {
+   "name": "Ohio State Championship",
+   "addr": "Columbus, OH, USA",
+   "date": "29 Jul - 1 Aug 2027",
+   "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
+   "table": "",
+   "sources": [
+    "World Foosball Tour"
+   ],
+   "lat": 39.9622601,
+   "lon": -83.0007065,
+   "approx": true
+  },
+  {
+   "name": "Swiss Open",
+   "addr": "Zürcherstrasse 61, 8142 Uitikon/Zürich",
+   "date": "10 - 11 Oct 2026",
+   "url": "https://www.players4players.de/en/tournaments",
+   "table": "",
+   "sources": [
+    "P4P"
+   ],
+   "lat": 47.3701567,
+   "lon": 8.4535427,
+   "approx": false
+  },
+  {
+   "name": "Heilige drei Könige Turnier - Allgäu Open",
+   "addr": "Ottobeuren",
+   "date": "9 - 10 Jan 2027",
+   "url": "https://www.players4players.de/en/tournaments",
+   "table": "",
+   "sources": [
+    "P4P"
+   ],
+   "lat": 47.9417348,
+   "lon": 10.2999793,
+   "approx": true
+  },
+  {
+   "name": "P4P Frankfurt Open",
+   "addr": "Frankfurt",
+   "date": "27 - 28 Mar 2027",
+   "url": "https://www.players4players.de/en/tournaments",
+   "table": "",
+   "sources": [
+    "P4P"
+   ],
+   "lat": 50.1106444,
+   "lon": 8.6820917,
+   "approx": true
+  },
+  {
+   "name": "P4P Sulzbach Open",
+   "addr": "Gaggenau-Sulzbach",
+   "date": "26 - 27 Jun 2027",
+   "url": "https://www.players4players.de/en/tournaments",
+   "table": "",
+   "sources": [
+    "P4P"
+   ],
+   "lat": 48.8070359,
+   "lon": 8.3612857,
+   "approx": true
+  },
+  {
+   "name": "Swiss Open",
+   "addr": "Zürich, Uitikon",
+   "date": "25 - 26 Sep 2027",
+   "url": "https://www.players4players.de/en/tournaments",
+   "table": "",
+   "sources": [
+    "P4P"
+   ],
+   "lat": 47.3705756,
+   "lon": 8.4530961,
+   "approx": true
   }
  ]
 }
