@@ -62,28 +62,34 @@ def hav(a, b):
     return 12742 * math.asin(math.sqrt(x))
 
 
+MON_RE = r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+
+
 def to_range(s):
-    """'23 - 25 Oct', '15 - 18 Oct 2026', '29 Jul - 1 Aug 2027', '5 Dec' -> (start, end) jako date"""
-    today = datetime.date.today()
-    ym = re.search(r"\b(20\d\d)\b", s)
-    m = re.search(r"(\d{1,2})\s*([A-Za-z]{3})?[a-z]*\s*[-–]\s*(\d{1,2})\s*([A-Za-z]{3})", s)
-    if m:
-        d1, d2 = int(m.group(1)), int(m.group(3))
-        m2 = MON3.index(m.group(4).capitalize())
-        m1 = MON3.index(m.group(2).capitalize()) if m.group(2) else m2
-    else:
-        m = re.search(r"(\d{1,2})\s*([A-Za-z]{3})", s)
-        if not m:
-            return None
-        d1 = d2 = int(m.group(1))
-        m1 = m2 = MON3.index(m.group(2).capitalize())
-    y = int(ym.group(1)) if ym else today.year
-    a = datetime.date(y, m1 + 1, d1)
-    b = datetime.date(y + (1 if m2 < m1 else 0), m2 + 1, d2)
-    if not ym and b < today - datetime.timedelta(days=14):
-        a = a.replace(year=a.year + 1)
-        b = b.replace(year=b.year + 1)
-    return a, b
+    """'23 - 25 Oct', '15 - 18 Oct 2026', '29 Jul - 1 Aug 2027', '5 Dec' -> (start, end) jako date, jinak None"""
+    try:
+        today = datetime.date.today()
+        ym = re.search(r"\b(20\d\d)\b", s)
+        m = re.search(r"(?<!\d)(\d{1,2})\s*" + MON_RE + r"?[a-z]*\s*[-\u2013]\s*(\d{1,2})\s*" + MON_RE, s, re.I)
+        if m:
+            d1, d2 = int(m.group(1)), int(m.group(3))
+            m2 = MON3.index(m.group(4).capitalize())
+            m1 = MON3.index(m.group(2).capitalize()) if m.group(2) else m2
+        else:
+            m = re.search(r"(?<!\d)(\d{1,2})\s*" + MON_RE, s, re.I)
+            if not m:
+                return None
+            d1 = d2 = int(m.group(1))
+            m1 = m2 = MON3.index(m.group(2).capitalize())
+        y = int(ym.group(1)) if ym else today.year
+        a = datetime.date(y, m1 + 1, d1)
+        b = datetime.date(y + (1 if m2 < m1 else 0), m2 + 1, d2)
+        if not ym and b < today - datetime.timedelta(days=14):
+            a = a.replace(year=a.year + 1)
+            b = b.replace(year=b.year + 1)
+        return a, b
+    except Exception:
+        return None
 
 
 # ---------- ITSF ----------
@@ -91,7 +97,7 @@ LIST_JS = r"""() => {
  const txt=a=>a.textContent.trim().toUpperCase();
  const regs=[...document.querySelectorAll('a')].filter(a=>txt(a)==='REGISTER');
  const rowOf=a=>{let e=a;while(e.parentElement&&[...e.parentElement.querySelectorAll('a')].filter(x=>txt(x)==='REGISTER').length<2)e=e.parentElement;return e;};
- const dateRe=/^\d+(\s*-\s*\d+)?\s+[A-Za-z]{3}/;
+ const dateRe=/^\d{1,2}(\s*-\s*\d{1,2})?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(\s|$)/i;
  return regs.map(a=>{
   const L=rowOf(a).innerText.split('\n').map(x=>x.trim()).filter(Boolean).filter(x=>!/^(REGISTER|INFO|NEW)$/i.test(x));
   return {name:L[0],cc:L.find(x=>/^[A-Z]{3}$/.test(x))||L.slice(1).find(x=>!dateRe.test(x)&&!/^itsf/i.test(x))||'',date:L.find(x=>dateRe.test(x))||'',url:a.href};
