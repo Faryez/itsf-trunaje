@@ -92,6 +92,42 @@ def to_range(s):
         return None
 
 
+# ---------- presna poloha ze stranky turnaje (ITSF / Coral) ----------
+def find_coords(obj, out):
+    """projde JSON a vybere dvojice lat/lng (klice lat|latitude a lng|lon|long|longitude)"""
+    if isinstance(obj, dict):
+        low = {str(k).lower(): v for k, v in obj.items()}
+        la = next((low[k] for k in ("lat", "latitude") if isinstance(low.get(k), (int, float))), None)
+        lo = next((low[k] for k in ("lng", "lon", "long", "longitude") if isinstance(low.get(k), (int, float))), None)
+        if la is not None and lo is not None and -90 <= la <= 90 and -180 <= lo <= 180 and (la or lo):
+            out.append((float(la), float(lo)))
+        for v in obj.values():
+            find_coords(v, out)
+    elif isinstance(obj, list):
+        for v in obj:
+            find_coords(v, out)
+
+
+def coords_from_hrefs(hrefs, out):
+    for h in hrefs:
+        if not re.search(r"maps|geo:|mapbox|openstreetmap", h, re.I):
+            continue
+        for m in re.finditer(r"(-?\d{1,2}\.\d{3,})[,%2C ]+(-?\d{1,3}\.\d{3,})", h):
+            la, lo = float(m.group(1)), float(m.group(2))
+            if -90 <= la <= 90 and -180 <= lo <= 180:
+                out.append((la, lo))
+
+
+def best_pair(pairs, ref):
+    """vybere dvojici souradnic nejblize orientacni poloze (mesto); musi byt do 60 km, jinak None"""
+    best = None
+    for la, lo in pairs:
+        d = hav((la, lo), (ref["lat"], ref["lon"]))
+        if d < 60 and (best is None or d < best[0]):
+            best = (d, la, lo)
+    return {"lat": best[1], "lon": best[2], "approx": False} if best else None
+
+
 # ---------- ITSF ----------
 LIST_JS = r"""() => {
  const txt=a=>a.textContent.trim().toUpperCase();
@@ -129,15 +165,29 @@ def scrape_itsf(ctx):
     rows = page.evaluate(LIST_JS)
     print("ITSF turnaje:", len(rows))
     items = []
+    pairs = []
+
+    def on_resp(resp):
+        try:
+            if "json" in (resp.headers.get("content-type") or ""):
+                find_coords(resp.json(), pairs)
+        except Exception:
+            pass
+
+    page.on("response", on_resp)
     for r in rows:
         m = re.search(r"/p/([A-Za-z0-9]+)", r["url"] or "")
         addr, table = "", ""
+        pairs.clear()
+        hrefs = []
         if m:
             try:
                 page.goto(f"{CORAL}/p/{m.group(1)}/t", wait_until="domcontentloaded")
                 page.wait_for_function("document.body.innerText.includes('Address')", timeout=15000)
                 res = page.evaluate(ADDR_JS)
                 addr, table = res["addr"], (res["table"] or "").strip()
+                page.wait_for_timeout(800)
+                hrefs = page.evaluate("() => [...document.querySelectorAll('a')].map(a => a.href)")
             except Exception as e:
                 print("ITSF bez adresy:", r["name"], e)
         c = country_name(r["cc"])
@@ -147,7 +197,9 @@ def scrape_itsf(ctx):
         elif c and c.lower() not in addr.lower():
             addr += ", " + c
         url = f"{CORAL}/p/{m.group(1)}" if m else ""
-        items.append({"name": r["name"], "addr": addr, "exact": exact, "date": r["date"], "url": url, "table": table, "source": S_ITSF})
+        found = list(pairs)
+        coords_from_hrefs(hrefs, found)
+        items.append({"name": r["name"], "addr": addr, "exact": exact, "date": r["date"], "url": url, "table": table, "source": S_ITSF, "pairs": found})
     page.close()
     return items
 
@@ -302,9 +354,20 @@ def same_name(a, b):
     return len(inter) >= 2 and len(inter) / min(len(ta), len(tb)) >= 0.8
 
 
+def norm(txt):
+    return unicodedata.normalize("NFKD", txt).encode("ascii", "ignore").decode().lower()
+
+
+def same_city(a, b):
+    """kratsi adresa bez carky (jen mesto) se vyskytuje v delsi adrese druheho zaznamu"""
+    a, b = norm(a), norm(b)
+    short, long_ = (a, b) if len(a) <= len(b) else (b, a)
+    return "," not in short and 2 < len(short) < 40 and short in long_
+
+
 def merge(out):
     """Slouci duplicity. Stejny turnaj = podobny nazev (po odstraneni roku, cisel a slova ITSF)
-    a zaroven zacatek v rozmezi 3 dnu, nebo stejny zacatek a vzdalenost do 40 km.
+    a zaroven zacatek v rozmezi 3 dnu, nebo stejny zacatek a stejne misto (do 40 km, nebo stejne mesto).
     Priorita zdroju pri konfliktu: ITSF > World Foosball Tour > P4P. Vitezny zaznam si ponecha vsechna data,
     ostatni zdroje se jen pripisou do 'sources'."""
     merged = []
@@ -319,7 +382,7 @@ def merge(out):
                 days = abs((mr[0] - rng[0]).days)
                 near = (m.get("lat") is not None and t.get("lat") is not None
                         and hav((m["lat"], m["lon"]), (t["lat"], t["lon"])) < 40)
-                if (days <= 3 and same_name(m["name"], t["name"])) or (days == 0 and near):
+                if (days <= 3 and same_name(m["name"], t["name"])) or (days == 0 and (near or same_city(m["addr"], t["addr"]))):
                     dup = m
                     break
         if dup:
@@ -362,6 +425,10 @@ def main():
                 g = dict(g) if g else {}
                 if g:
                     g["approx"] = (not it["exact"]) or bool(g.get("approx"))
+                    pg = best_pair(it.get("pairs", []), g) if it.get("pairs") else None
+                    if pg:
+                        g = pg
+                        print("presna poloha ze stranky:", it["name"])
                 rec = {"name": it["name"], "addr": it["addr"], "date": it["date"], "url": it.get("url", ""),
                        "table": it.get("table", ""), "sources": [src], **g}
                 out.append(rec)
