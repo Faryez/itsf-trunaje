@@ -1,20 +1,12 @@
 {
- "updated": "2026-10-06T14:56:47.191708Z",
+ "updated": "2026-10-10T19:19:57.039320Z",
  "tournaments": [
-  {
-   "name": "FUS Regional Championships of TRNAVA 2026/27",
-   "addr": "Šrobárova 10, 917 01, Trnavský kraj, Slovakia",
-   "date": "2 - 4 Oct",
-   "url": "https://app.tablesoccer.org/p/ZVK9B7",
-   "lat": 48.3820269,
-   "lon": 17.5827054,
-   "approx": false
-  },
   {
    "name": "Ricardo Lopes Cup 2026",
    "addr": "Rua Centro Cívico, 6200-866, Covilhã, Castelo Branco, Portugal",
    "date": "3 - 4 Oct",
    "url": "https://app.tablesoccer.org/p/6R3X47",
+   "table": "Leonhart",
    "lat": 40.3091877,
    "lon": -7.4925973,
    "approx": false
@@ -24,6 +16,7 @@
    "addr": "Calle De La Chorrera 7, 28890, Loeches, Provincia de Madrid, Spain",
    "date": "9 - 10 Oct",
    "url": "https://app.tablesoccer.org/p/6ELR9Z",
+   "table": "Leonhart",
    "lat": 42.1005064,
    "lon": -1.7753164,
    "approx": true
@@ -33,6 +26,7 @@
    "addr": "Rua da Agra, 4770, Bente, Braga, Portugal",
    "date": "10 Oct",
    "url": "https://app.tablesoccer.org/p/7DO28Z",
+   "table": "",
    "lat": 41.3847691,
    "lon": -8.4531769,
    "approx": true
@@ -42,6 +36,7 @@
    "addr": "Halbergstraße 84, 66121, Saarbrücken, Saarbrücken, Germany",
    "date": "14 - 18 Oct",
    "url": "https://app.tablesoccer.org/p/ZBYNP6",
+   "table": "Leonhart",
    "lat": 49.2303293,
    "lon": 7.0151193,
    "approx": false
@@ -51,6 +46,7 @@
    "addr": "Halbergstraße 84, 66121, Saarbrücken, Germany",
    "date": "14 Oct",
    "url": "https://app.tablesoccer.org/p/6JG336",
+   "table": "",
    "lat": 49.2303293,
    "lon": 7.0151193,
    "approx": false
@@ -60,6 +56,7 @@
    "addr": "Merivale Road 1642, K2G 4A1, Nepean, Nepean, Canada",
    "date": "2026 OTTAWA FALL OPEN",
    "url": "https://app.tablesoccer.org/p/6AYOB6",
+   "table": "Tornado",
    "lat": 45.344694,
    "lon": -75.7316559,
    "approx": false
@@ -69,6 +66,7 @@
    "addr": "Žernosecká 2, 182 00, Czechia",
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/ZVKGP7",
+   "table": "Rosengart",
    "lat": 50.1323816,
    "lon": 14.4756948,
    "approx": false
@@ -78,17 +76,19 @@
    "addr": "Miercurea Ciuc, Harghita County, Romania",
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/6P3XRZ",
+   "table": "Garlando",
    "lat": 45.9852129,
    "lon": 24.6859225,
    "approx": true
   },
   {
    "name": "FUS Eastern Slovak Championships 2026/27",
-   "addr": "Košice, Košice Region, Slovakia",
+   "addr": "Čermeľská cesta 1, 040 01, Košický kraj, Slovakia",
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/692DK7",
-   "lat": 48.7220196,
-   "lon": 21.2692121,
+   "table": "Rosengart",
+   "lat": 48.7406406,
+   "lon": 21.2434075,
    "approx": false
   },
   {
@@ -96,6 +96,7 @@
    "addr": "Składowa 5, 50-209, Wrocław, Województwo dolnośląskie, Poland",
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/7NPQ8Z",
+   "table": "Leonhart",
    "lat": 51.120293,
    "lon": 17.0270025,
    "approx": false
@@ -105,6 +106,7 @@
    "addr": "Boulevard Kukulcan Km 13.5, 77500, Cancún, Quintana Roo, Mexico",
    "date": "29 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/7NPEPZ",
+   "table": "",
    "lat": 21.092704,
    "lon": -86.7706697,
    "approx": false
@@ -114,6 +116,7 @@
    "addr": "Splaiul Independenței 315, 060043, București, București, Romania",
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/Z4N4W6",
+   "table": "Bonzini",
    "lat": 44.4442736,
    "lon": 26.0518318,
    "approx": false
@@ -123,6 +126,7 @@
    "addr": "Ловен Парк 5, 1172, София, София, Bulgaria",
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/6J35QZ",
+   "table": "Leonhart",
    "lat": 42.6634495,
    "lon": 23.3433936,
    "approx": false
@@ -132,6 +136,7 @@
    "addr": "Kelekova ulica 4, 10360, Sesvete, Grad Zagreb, Croatia",
    "date": "6 - 7 Nov",
    "url": "https://app.tablesoccer.org/p/Z4NQ26",
+   "table": "Leonhart",
    "lat": 45.831996,
    "lon": 16.1098955,
    "approx": true
@@ -141,6 +146,7 @@
    "addr": "91555 Feuchtwangen, Germania, 91555, Feuchtwangen, Bavaria, Germany",
    "date": "6 - 8 Nov",
    "url": "https://app.tablesoccer.org/p/6PDW56",
+   "table": "Ullrich Kicker",
    "lat": 49.1752971,
    "lon": 10.321351,
    "approx": true
@@ -150,6 +156,7 @@
    "addr": "Ambala, Haryana, India",
    "date": "12 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/6JGQQ6",
+   "table": "",
    "lat": 30.3843674,
    "lon": 76.770421,
    "approx": false
@@ -159,6 +166,7 @@
    "addr": "Boulevard Sainte-Anne 2250, G1J 1Y2, Québec, Québec, Canada",
    "date": "13 - 16 Nov",
    "url": "https://app.tablesoccer.org/p/ZWL837",
+   "table": "Leonhart",
    "lat": 46.841558,
    "lon": -71.2179809,
    "approx": false
@@ -168,6 +176,7 @@
    "addr": "Jiráskova 1, 851 01, Bratislava, Bratislavský kraj, Slovakia",
    "date": "13 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/Z8RV46",
+   "table": "Tornado",
    "lat": 48.1177841,
    "lon": 17.1041763,
    "approx": false
@@ -177,6 +186,7 @@
    "addr": "Rue De Montreuil, 62170, Écuires, Écuires, France",
    "date": "14 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/ZB8Y36",
+   "table": "Bonzini",
    "lat": 50.4537309,
    "lon": 1.7515978,
    "approx": false
@@ -186,6 +196,7 @@
    "addr": "Siemensstraße 26, 10551, Berlin, Berlin, Germany",
    "date": "14 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/ZWL237",
+   "table": "Leonhart",
    "lat": 52.5337603,
    "lon": 13.3379308,
    "approx": false
@@ -195,6 +206,7 @@
    "addr": "Zuider IJdijk 20, 1095 KN, Amsterdam, Netherlands",
    "date": "14 Nov",
    "url": "https://app.tablesoccer.org/p/6R3W47",
+   "table": "Leonhart",
    "lat": 52.364499,
    "lon": 4.9613801,
    "approx": false
@@ -204,6 +216,7 @@
    "addr": "N. J. Fjords Gade 2R, 8000, Aarhus, Denmark",
    "date": "20 - 21 Nov",
    "url": "https://app.tablesoccer.org/p/ZYKNO7",
+   "table": "Bonzini",
    "lat": 56.144009,
    "lon": 10.198238,
    "approx": false
@@ -213,6 +226,7 @@
    "addr": "Kamunde Road, Nairobi, Kenya",
    "date": "5 Dec",
    "url": "https://app.tablesoccer.org/p/7DOBYZ",
+   "table": "Other",
    "lat": -1.252604,
    "lon": 36.8859094,
    "approx": false
