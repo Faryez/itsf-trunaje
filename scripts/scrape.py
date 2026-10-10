@@ -45,12 +45,21 @@ def geocode(q):
     return cache[q]
 
 
+STREET_RE = re.compile(r"[^\W\d_]{2,}\.?\s+\d+[a-zA-Z]?(?:[-/]\d+)?$")
+
+
+def street_like(part):
+    """'Lilienthalgasse 6', 'Zurcherstrasse 61' -> True (ulice s cislem); '91555 Feuchtwangen' -> False"""
+    return bool(STREET_RE.search(part.strip()))
+
+
 def loose(addr):
     parts = [p.strip() for p in addr.split(",") if p.strip()]
     for k in range(len(parts)):
         g = geocode(", ".join(parts[k:]))
         if g:
-            return {**g, "approx": k > 0}
+            # vynechani uvodniho nazvu mista (napr. 'Stage 3') polohu nezprecizni, pokud zbyva ulice s cislem
+            return {**g, "approx": k > 0 and not street_like(parts[k])}
     return None
 
 
@@ -248,6 +257,16 @@ def parse_wft_lines(lines):
     return out
 
 
+def wft_address(html):
+    m = re.search(r"google\.com/maps/search/\?api=1(?:&amp;|&)query=([^\"'&<>\s]+)", html)
+    if m:
+        return urllib.parse.unquote_plus(m.group(1)).strip()
+    m = re.search(r"Official Event Location\s*</[^>]+>\s*<h\d[^>]*>\s*([^<]+?)\s*</h\d>", html, re.S)
+    if m:
+        return re.sub(r"\s*[\u00b7|]\s*", ", ", m.group(1)).strip()
+    return ""
+
+
 def scrape_wft(ctx):
     page = ctx.new_page()
     page.goto(WFT_URL, wait_until="domcontentloaded")
@@ -258,7 +277,17 @@ def scrape_wft(ctx):
     items = parse_wft_lines(lines)
     for it in items:
         it["url"] = next((l["h"] for l in links if it["name"].lower() in l["t"].lower()), WFT_URL)
-    print("WFT turnaje:", len(items))
+    for it in items:
+        if it["url"] == WFT_URL:
+            continue
+        try:
+            addr = wft_address(fetch(it["url"]).decode("utf-8", "ignore"))
+        except Exception as e:
+            print("WFT stranka turnaje nejde nacist:", it["name"], e)
+            addr = ""
+        if addr:
+            it["addr"], it["exact"] = addr, True
+    print("WFT turnaje:", len(items), "s adresou ze stranky:", sum(1 for i in items if i["exact"]))
     if not items:
         raise RuntimeError("WFT: zadne turnaje")
     return items
