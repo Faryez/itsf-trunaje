@@ -1,6 +1,14 @@
 {
- "updated": "2026-10-12T11:35:01.456330Z",
- "logos": {},
+ "updated": "2026-10-12T11:49:26.311339Z",
+ "logos": {
+  "leonhart": "data/logos/leonhart.png",
+  "tornado": "data/logos/tornado.png",
+  "rosengart": "data/logos/rosengart.png",
+  "garlando": "data/logos/garlando.png",
+  "bonzini": "data/logos/bonzini.png",
+  "ullrich kicker": "data/logos/ullrich-kicker.png",
+  "other": "data/logos/other.png"
+ },
  "tournaments": [
   {
    "name": "Ricardo Lopes Cup 2026",
