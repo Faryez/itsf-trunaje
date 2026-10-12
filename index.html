@@ -23,6 +23,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 .warn{margin-top:8px;background:var(--bg-warning);color:var(--text-warning);border-radius:8px;padding:6px 10px;font-size:12px;line-height:1.4}
 .lg{display:inline-flex;align-items:center;background:#fff;border:0.5px solid rgba(11,11,11,.14);border-radius:7px;padding:3px 8px;height:28px}
 .lg img{height:20px;max-width:96px;object-fit:contain;display:block}
+.cat{font-size:12px;padding:2px 10px;border-radius:999px;color:var(--text-primary)}
 .fl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
 .chip{border-radius:999px;padding:5px 14px}
 </style></head><body>
@@ -63,6 +64,9 @@ let start={name:'Praha',lon:14.43,lat:50.08};
 let LOGOS={},T=[],P=[],max=1000,tbl=null,srcF=null,cat=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
 const hav=(a,b)=>{const r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const x=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const val=t=>t.road??t.air;
+const CATCOL=[['champions league','#b565e8'],['world series','#f4676a'],['world cup','#d92fc4'],['finals','#b8a060'],['750','#f58a2a'],['500','#f2c230'],['250','#3fcf8e']];
+const catColor=c=>{const n=(c||'').toLowerCase();const m=CATCOL.find(x=>n.includes(x[0]));return m?m[1]:'';};
+const catStyle=c=>{const k=catColor(c);return k?`border:1px solid ${k};background:color-mix(in srgb,${k} 18%,transparent)`:'border:0.5px solid var(--border-strong)';};
 const logoFor=t=>{const n=(t.table||'').toLowerCase();for(const k in LOGOS){if(n.includes(k))return LOGOS[k];}return '';};
 const tlow=t=>(t.table||'').trim().toLowerCase();
 const vis=t=>val(t)<=max&&(!tbl||tlow(t)===tbl)&&(!srcF||(t.sources||[]).includes(srcF))&&(!cat||(t.category||'')===cat);
@@ -237,7 +241,7 @@ function showPop(){
  const p=P.find(x=>x.id===sel);
  if(!p||!proj||!p.vis.length)return;
  const wrap=$('mapwrap'),sc=wrap.clientWidth/W;
- pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.vis.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div>${t.table?'<div>'+esc(t.table)+'</div>':''}${t.category?'<div>'+esc(t.category)+'</div>':''}<div style="color:var(--text-muted)">${esc((t.sources||[]).join(' · '))}</div>${t.approx?'<div class="warn">Přibližná poloha: přesná adresa není k dispozici, místo je určené jen podle města.</div>':''}<div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km${t.road==null?'':', autem '+fmt(t.road)+' km'}</div><div>${[t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a>':'',canRoute(t)?'<a href="'+gmaps(t)+'" target="_blank" rel="noopener">'+routeTxt(t)+'</a>':''].filter(Boolean).join(' · ')}</div></div>`).join('')+'<div class="t" id="pt"></div>';
+ pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.vis.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div>${t.table?'<div>'+esc(t.table)+'</div>':''}${t.category?'<div><span class="cat" style="'+catStyle(t.category)+'">'+esc(t.category)+'</span></div>':''}<div style="color:var(--text-muted)">${esc((t.sources||[]).join(' · '))}</div>${t.approx?'<div class="warn">Přibližná poloha: přesná adresa není k dispozici, místo je určené jen podle města.</div>':''}<div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km${t.road==null?'':', autem '+fmt(t.road)+' km'}</div><div>${[t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a>':'',canRoute(t)?'<a href="'+gmaps(t)+'" target="_blank" rel="noopener">'+routeTxt(t)+'</a>':''].filter(Boolean).join(' · ')}</div></div>`).join('')+'<div class="t" id="pt"></div>';
  pop.style.display='block';
  const pw=pop.offsetWidth,ph=pop.offsetHeight,cw=wrap.clientWidth,px=p.x*sc,py=p.y*sc;
  const left=Math.max(4,Math.min(cw-pw-4,px-pw/2));
@@ -280,7 +284,7 @@ function render(){
   </div>
   ${t.approx?'<div class="warn"><b style="font-weight:500">Přibližná poloha:</b> přesná adresa není k dispozici, vzdálenost a trasa vedou do centra města.</div>':''}
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;min-height:24px">
-   <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:''}${t.category?`<span style="font-size:12px;border:0.5px solid var(--border-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${esc(t.category)}</span>`:''}</span>
+   <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:''}${t.category?`<span class="cat" style="${catStyle(t.category)}">${esc(t.category)}</span>`:''}</span>
    ${t.url?`<a class="gm" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Odkaz na turnaj ↗</a>`:''}
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;min-height:24px">
