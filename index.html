@@ -21,6 +21,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 #pop a,.gm{color:var(--text-accent);text-decoration:none}
 .zb{width:34px;height:34px;padding:0;font-size:18px;line-height:1;border-radius:8px}
 .warn{margin-top:8px;background:var(--bg-warning);color:var(--text-warning);border-radius:8px;padding:6px 10px;font-size:12px;line-height:1.4}
+.fl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
 .chip{border-radius:999px;padding:5px 14px}
 </style></head><body>
 <div class="wrap">
@@ -37,8 +38,12 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 </div>
 <div id="msg" style="font-size:13px;color:var(--text-danger);min-height:0"></div>
 <div id="ask" style="display:none;background:var(--bg-accent);color:var(--text-accent);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div style="margin-bottom:10px">Chceš jako výchozí bod použít svou aktuální polohu? Prohlížeč se tě zeptá na povolení.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="askYes" type="button">Ano, použít polohu</button><button id="askNo" type="button">Ne, použít Prahu</button></div></div>
-<div id="chips" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:-4px 0 14px"><span id="schips" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></span><label id="clabel" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">Kategorie: <select id="csel" aria-label="Kategorie"></select></label><label id="tlabel" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">Stůl: <select id="tsel" aria-label="Stůl"></select></label></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+<label class="fl">Vzdálenost: <select id="dsel" aria-label="Vzdálenost"></select></label>
+<label id="slabel" class="fl">Zdroj: <select id="ssel" aria-label="Zdroj"></select></label>
+<label id="clabel" class="fl" style="display:none">Kategorie: <select id="csel" aria-label="Kategorie"></select></label>
+<label id="tlabel" class="fl" style="display:none">Stůl: <select id="tsel" aria-label="Stůl"></select></label>
+</div>
 <div class="grid">
  <div id="list" style="display:flex;flex-direction:column;gap:8px"></div>
  <div class="mapbox"><div id="mapwrap" style="position:relative"><div id="map" style="width:100%;min-height:240px;line-height:0"></div><div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:6px;z-index:4"><button class="zb" id="zin" aria-label="Přiblížit">+</button><button class="zb" id="zout" aria-label="Oddálit">−</button><button class="zb" id="zrs" aria-label="Původní pohled" style="font-size:11px">Reset</button></div><div id="pop"></div></div></div>
@@ -231,7 +236,7 @@ function showPop(){
  const p=P.find(x=>x.id===sel);
  if(!p||!proj||!p.vis.length)return;
  const wrap=$('mapwrap'),sc=wrap.clientWidth/W;
- pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.vis.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div>${t.table?'<div>'+esc(t.table)+'</div>':''}<div style="color:var(--text-muted)">${esc((t.sources||[]).join(' · '))}</div>${t.approx?'<div class="warn">Přibližná poloha: přesná adresa není k dispozici, místo je určené jen podle města.</div>':''}<div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km${t.road==null?'':', autem '+fmt(t.road)+' km'}</div><div>${[t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a>':'',canRoute(t)?'<a href="'+gmaps(t)+'" target="_blank" rel="noopener">'+routeTxt(t)+'</a>':''].filter(Boolean).join(' · ')}</div></div>`).join('')+'<div class="t" id="pt"></div>';
+ pop.innerHTML='<button class="x" aria-label="Zavřít" id="px">×</button>'+p.vis.map(t=>`<div class="it"><div style="font-weight:500">${esc(t.name)}</div><div>${esc(t.addr)}</div><div>${esc(t.date)}${t.cd.txt?' · <b style="font-weight:500">'+t.cd.txt+'</b>':''}</div>${t.table?'<div>'+esc(t.table)+'</div>':''}${t.category?'<div>'+esc(t.category)+'</div>':''}<div style="color:var(--text-muted)">${esc((t.sources||[]).join(' · '))}</div>${t.approx?'<div class="warn">Přibližná poloha: přesná adresa není k dispozici, místo je určené jen podle města.</div>':''}<div style="color:var(--text-secondary)">Vzdušně ${fmt(t.air)} km${t.road==null?'':', autem '+fmt(t.road)+' km'}</div><div>${[t.url?'<a href="'+esc(t.url)+'" target="_blank" rel="noopener">Odkaz na turnaj</a>':'',canRoute(t)?'<a href="'+gmaps(t)+'" target="_blank" rel="noopener">'+routeTxt(t)+'</a>':''].filter(Boolean).join(' · ')}</div></div>`).join('')+'<div class="t" id="pt"></div>';
  pop.style.display='block';
  const pw=pop.offsetWidth,ph=pop.offsetHeight,cw=wrap.clientWidth,px=p.x*sc,py=p.y*sc;
  const left=Math.max(4,Math.min(cw-pw-4,px-pw/2));
@@ -244,8 +249,7 @@ function showPop(){
  $('px').onclick=()=>{sel=null;render();};
 }
 function render(){
- $('chips').innerHTML=chips.map(c=>`<button class="chip" data-m="${c[1]}" style="${c[1]===max?'background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)':''}">${c[0]}</button>`).join('');
- document.querySelectorAll('#chips button').forEach(b=>b.onclick=()=>{max=+b.dataset.m;render();});
+ const ds=$('dsel');ds.innerHTML=chips.map(c=>`<option value="${c[1]}"${c[1]===max?' selected':''}>${c[0]}</option>`).join('');ds.onchange=()=>{max=+ds.value;render();};
  const ON='background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)';
  const tm=new Map();T.forEach(t=>{if(t.table&&t.table.trim())tm.set(tlow(t),t.table.trim());});
  const tb=[...tm.entries()].sort((a,b)=>a[1].localeCompare(b[1]));
@@ -258,8 +262,8 @@ function render(){
  if(cl.length){cc.style.display='flex';cse.innerHTML='<option value="">V\u0161echny</option>'+cl.map(n=>`<option value="${esc(n)}"${cat===n?' selected':''}>${esc(n)}</option>`).join('');cse.onchange=()=>{cat=cse.value||null;max=cat?1000:600;sel=null;render();};}else cc.style.display='none';
  const sm=new Set();T.forEach(t=>(t.sources||[]).forEach(x=>sm.add(x)));
  const sl=[...sm].sort();
- $('schips').innerHTML=sl.length>1?'<span style="font-size:12px;color:var(--text-secondary)">Zdroj:</span>'+[['','Vše'],...sl.map(x=>[x,x])].map(([k,n])=>`<button class="chip" data-s="${esc(k)}" style="${(srcF||'')===k?ON:''}">${esc(n)}</button>`).join(''):'';
- document.querySelectorAll('#schips button').forEach(b=>b.onclick=()=>{srcF=b.dataset.s||null;render();});
+ const ss=$('ssel');ss.innerHTML='<option value="">Všechny</option>'+sl.map(x=>`<option value="${esc(x)}"${srcF===x?' selected':''}>${esc(x)}</option>`).join('');ss.onchange=()=>{srcF=ss.value||null;render();};
+ $('slabel').style.display=sl.length>1?'flex':'none';
  const L=T.filter(vis).sort((a,b)=>{
   const fa=a.cd.n===1e8?1:0,fb=b.cd.n===1e8?1:0;
   return fa-fb||(sortKey==='km'?val(a)-val(b):a.cd.n-b.cd.n||val(a)-val(b));
@@ -275,7 +279,7 @@ function render(){
   </div>
   ${t.approx?'<div class="warn"><b style="font-weight:500">Přibližná poloha:</b> přesná adresa není k dispozici, vzdálenost a trasa vedou do centra města.</div>':''}
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;min-height:24px">
-   <span>${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:''}</span>
+   <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:''}${t.category?`<span style="font-size:12px;border:0.5px solid var(--border-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${esc(t.category)}</span>`:''}</span>
    ${t.url?`<a class="gm" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Odkaz na turnaj ↗</a>`:''}
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;min-height:24px">
