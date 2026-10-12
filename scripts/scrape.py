@@ -9,6 +9,9 @@ ITSF_URL = "https://tablesoccer.org/tournaments/"
 CORAL = "https://app.tablesoccer.org"
 WFT_URL = "https://worldfoosballtour.com/pages/wft-tournament-schedule"
 P4P_URL = "https://www.players4players.de/en/tournaments"
+PARTNERS_URL = "https://tablesoccer.org/partners/"
+LOGO_DIR = pathlib.Path("data/logos")
+BRANDS = ["rosengart", "leonhart", "garlando", "tornado", "ullrich", "bonzini", "roberto"]
 S_ITSF, S_WFT, S_P4P = "ITSF", "World Foosball Tour", "P4P"
 OUT = pathlib.Path("data/tournaments.json")
 CACHE = pathlib.Path("data/geocache.json")
@@ -434,6 +437,52 @@ def merge(out):
     return merged
 
 
+# ---------- loga stolu (stranka Partners na ITSF) ----------
+LOGOS_JS = """() => [...document.querySelectorAll('img')].map(i => {
+ const box = i.closest('a,li,div,figure');
+ return {src: i.currentSrc || i.src, alt: i.alt || '', text: box ? box.innerText.slice(0, 120) : ''};
+}).filter(x => x.src && !x.src.startsWith('data:'))"""
+
+
+def pick_logo_imgs(imgs):
+    """pro kazdou znacku vybere prvni obrazek, jehoz alt/adresa/okolni text obsahuje nazev znacky"""
+    found = {}
+    for img in imgs:
+        hay = (img["alt"] + " " + img["src"] + " " + img["text"]).lower()
+        for b in BRANDS:
+            if b in hay and b not in found:
+                found[b] = img["src"]
+                break
+    return found
+
+
+def scrape_logos(ctx):
+    page = ctx.new_page()
+    page.goto(PARTNERS_URL, wait_until="networkidle")
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(1500)
+    imgs = page.evaluate(LOGOS_JS)
+    found = pick_logo_imgs(imgs)
+    LOGO_DIR.mkdir(parents=True, exist_ok=True)
+    logos = {}
+    for brand, src in found.items():
+        try:
+            resp = ctx.request.get(src)
+            if not resp.ok:
+                continue
+            ext = pathlib.Path(urllib.parse.urlparse(src).path).suffix.lower()
+            if ext not in (".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"):
+                ext = ".png"
+            path = LOGO_DIR / (brand + ext)
+            path.write_bytes(resp.body())
+            logos[brand] = path.as_posix()
+        except Exception as e:
+            print("logo se nepodarilo stahnout:", brand, e)
+    page.close()
+    print("loga stolu:", sorted(logos))
+    return logos
+
+
 # ---------- hlavni beh ----------
 def main():
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
@@ -447,6 +496,11 @@ def main():
                 results[key] = fn(ctx)
             except Exception as e:
                 print("CHYBA zdroje", key, ":", e)
+        try:
+            logos = scrape_logos(ctx)
+        except Exception as e:
+            print("CHYBA log:", e)
+            logos = None
         b.close()
     try:
         results[S_P4P] = scrape_p4p()
@@ -478,7 +532,9 @@ def main():
 
     merged = merge(out)
 
-    OUT.write_text(json.dumps({"updated": datetime.datetime.utcnow().isoformat() + "Z", "tournaments": merged},
+    if not logos:
+        logos = old.get("logos", {})
+    OUT.write_text(json.dumps({"updated": datetime.datetime.utcnow().isoformat() + "Z", "logos": logos, "tournaments": merged},
                               ensure_ascii=False, indent=1))
     print("ulozeno", len(merged))
 
