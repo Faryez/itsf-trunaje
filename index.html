@@ -61,7 +61,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const R=6371,W=400,H=380;
 const roadC=LS('road')||{};
 let start={name:'Praha',lon:14.43,lat:50.08};
-let T=[],P=[],max=600,tbl=null,srcF=null,cat=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
+let T=[],P=[],max=1000,tbl=null,srcF=null,cat=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
 const hav=(a,b)=>{const r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const x=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const val=t=>t.road??t.air;
 const tlow=t=>(t.table||'').trim().toLowerCase();
@@ -259,7 +259,7 @@ function render(){
  const cs=new Set();T.forEach(t=>{if(t.category)cs.add(t.category);});
  const cl=[...cs].sort((a,b)=>{const ia=ORDER.indexOf(a),ib=ORDER.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib)||a.localeCompare(b);});
  const cc=$('clabel'),cse=$('csel');
- if(cl.length){cc.style.display='flex';cse.innerHTML='<option value="">V\u0161echny</option>'+cl.map(n=>`<option value="${esc(n)}"${cat===n?' selected':''}>${esc(n)}</option>`).join('');cse.onchange=()=>{cat=cse.value||null;max=cat?1000:600;sel=null;render();};}else cc.style.display='none';
+ if(cl.length){cc.style.display='flex';cse.innerHTML='<option value="">V\u0161echny</option>'+cl.map(n=>`<option value="${esc(n)}"${cat===n?' selected':''}>${esc(n)}</option>`).join('');cse.onchange=()=>{cat=cse.value||null;sel=null;render();};}else cc.style.display='none';
  const sm=new Set();T.forEach(t=>(t.sources||[]).forEach(x=>sm.add(x)));
  const sl=[...sm].sort();
  const ss=$('ssel');ss.innerHTML='<option value="">Všechny</option>'+sl.map(x=>`<option value="${esc(x)}"${srcF===x?' selected':''}>${esc(x)}</option>`).join('');ss.onchange=()=>{srcF=ss.value||null;render();};
