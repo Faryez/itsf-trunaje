@@ -67,7 +67,7 @@ const val=t=>t.road??t.air;
 const CATCOL=[['champions league','#b565e8'],['world series','#f4676a'],['world cup','#d92fc4'],['finals','#b8a060'],['750','#f58a2a'],['500','#f2c230'],['250','#3fcf8e']];
 const catColor=c=>{const n=(c||'').toLowerCase();const m=CATCOL.find(x=>n.includes(x[0]));return m?m[1]:'';};
 const catStyle=c=>{const k=catColor(c);return k?`border:1px solid ${k};background:color-mix(in srgb,${k} 18%,transparent)`:'border:0.5px solid var(--border-strong)';};
-const logoFor=t=>{const n=(t.table||'').toLowerCase();for(const k in LOGOS){if(n.includes(k))return LOGOS[k];}return '';};
+const logoFor=t=>{const n=(t.table||'').trim().toLowerCase();if(!n)return '';for(const k in LOGOS){if(n.includes(k)||k.includes(n))return LOGOS[k];}return '';};
 const tlow=t=>(t.table||'').trim().toLowerCase();
 const vis=t=>val(t)<=max&&(!tbl||tlow(t)===tbl)&&(!srcF||(t.sources||[]).includes(srcF))&&(!cat||(t.category||'')===cat);
 const col=k=>k<300?'success':k<600?'warning':'danger';
