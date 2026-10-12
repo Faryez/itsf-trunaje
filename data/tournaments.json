@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10T20:34:54.828829Z",
+ "updated": "2026-10-12T10:18:50.276939Z",
  "tournaments": [
   {
    "name": "Ricardo Lopes Cup 2026",
@@ -7,6 +7,7 @@
    "date": "3 - 4 Oct",
    "url": "https://app.tablesoccer.org/p/6R3X47",
    "table": "Leonhart",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -15,24 +16,12 @@
    "approx": false
   },
   {
-   "name": "ITSF250 III OPEN INTERNACIONAL DE LOECHES",
-   "addr": "Calle De La Chorrera 7, 28890, Loeches, Provincia de Madrid, Spain",
-   "date": "9 - 10 Oct",
-   "url": "https://app.tablesoccer.org/p/6ELR9Z",
-   "table": "Leonhart",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 42.1005064,
-   "lon": -1.7753164,
-   "approx": true
-  },
-  {
    "name": "MULTITABLE WT250 ARCD BENTE 2026",
    "addr": "Rua da Agra, 4770, Bente, Braga, Portugal",
    "date": "10 Oct",
    "url": "https://app.tablesoccer.org/p/7DO28Z",
    "table": "",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -46,6 +35,7 @@
    "date": "14 - 18 Oct",
    "url": "https://app.tablesoccer.org/p/ZBYNP6",
    "table": "Leonhart",
+   "category": "World Series",
    "sources": [
     "ITSF"
    ],
@@ -59,6 +49,7 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/6AYOB6",
    "table": "Tornado",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -72,6 +63,7 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/ZVKGP7",
    "table": "Rosengart",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -85,6 +77,7 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/6P3XRZ",
    "table": "Garlando",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -98,6 +91,7 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/692DK7",
    "table": "Rosengart",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -111,6 +105,7 @@
    "date": "23 - 25 Oct",
    "url": "https://app.tablesoccer.org/p/7NPQ8Z",
    "table": "Leonhart",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -124,6 +119,7 @@
    "date": "29 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/7NPEPZ",
    "table": "",
+   "category": "Americas Cup",
    "sources": [
     "ITSF"
    ],
@@ -137,6 +133,7 @@
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/Z4N4W6",
    "table": "Bonzini",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -150,6 +147,7 @@
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/6J35QZ",
    "table": "Leonhart",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -163,6 +161,7 @@
    "date": "6 - 7 Nov",
    "url": "https://app.tablesoccer.org/p/Z4NQ26",
    "table": "Leonhart",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -176,6 +175,7 @@
    "date": "6 - 8 Nov",
    "url": "https://app.tablesoccer.org/p/6PDW56",
    "table": "Ullrich Kicker",
+   "category": "ITSF 500",
    "sources": [
     "ITSF",
     "P4P"
@@ -190,6 +190,7 @@
    "date": "12 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/6JGQQ6",
    "table": "",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -203,6 +204,7 @@
    "date": "13 - 16 Nov",
    "url": "https://app.tablesoccer.org/p/ZWL837",
    "table": "Leonhart",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -216,6 +218,7 @@
    "date": "13 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/Z8RV46",
    "table": "Tornado",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -229,6 +232,7 @@
    "date": "14 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/ZB8Y36",
    "table": "Bonzini",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -242,6 +246,7 @@
    "date": "14 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/ZWL237",
    "table": "Leonhart",
+   "category": "ITSF 500",
    "sources": [
     "ITSF"
    ],
@@ -255,6 +260,7 @@
    "date": "14 Nov",
    "url": "https://app.tablesoccer.org/p/6R3W47",
    "table": "Leonhart",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -268,6 +274,7 @@
    "date": "20 - 21 Nov",
    "url": "https://app.tablesoccer.org/p/ZYKNO7",
    "table": "Bonzini",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -281,6 +288,7 @@
    "date": "5 Dec",
    "url": "https://app.tablesoccer.org/p/7DOBYZ",
    "table": "Other",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
@@ -293,7 +301,8 @@
    "addr": "Grand Rapids, MI, USA",
    "date": "15 - 18 Oct 2026",
    "url": "https://worldfoosballtour.com/pages/great-lakes-classic-2026",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -306,7 +315,8 @@
    "addr": "Stage 3, Lilienthalgasse 6, 1030 Vienna, Austria",
    "date": "25 - 29 Nov 2026",
    "url": "https://worldfoosballtour.com/pages/wft-international-championships-2026",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -319,7 +329,8 @@
    "addr": "Asheville, NC, USA",
    "date": "26 - 29 Nov 2026",
    "url": "https://worldfoosballtour.com/pages/2026-north-carolina-state-championships",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -332,7 +343,8 @@
    "addr": "New Orleans, LA, USA",
    "date": "3 - 6 Dec 2026",
    "url": "https://worldfoosballtour.com/pages/2026-louisiana-state",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -345,7 +357,8 @@
    "addr": "Nashville, TN, USA",
    "date": "4 - 7 Feb 2027",
    "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -358,7 +371,8 @@
    "addr": "Flandreau, SD, USA",
    "date": "26 - 28 Feb 2027",
    "url": "https://worldfoosballtour.com/pages/south-dakota-2027",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -371,7 +385,8 @@
    "addr": "Appleton, WI, USA",
    "date": "18 - 21 Mar 2027",
    "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -384,7 +399,8 @@
    "addr": "Las Vegas, NV, USA",
    "date": "7 - 11 Apr 2027",
    "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -397,7 +413,8 @@
    "addr": "Hoffman Estates, IL, USA",
    "date": "22 - 25 Apr 2027",
    "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -410,7 +427,8 @@
    "addr": "Pearl, MS, USA",
    "date": "23 - 25 Jul 2027",
    "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -423,7 +441,8 @@
    "addr": "Columbus, OH, USA",
    "date": "29 Jul - 1 Aug 2027",
    "url": "https://worldfoosballtour.com/pages/wft-tournament-schedule",
-   "table": "",
+   "table": "Tornado",
+   "category": "",
    "sources": [
     "World Foosball Tour"
    ],
@@ -432,24 +451,12 @@
    "approx": true
   },
   {
-   "name": "Swiss Open",
-   "addr": "Zürcherstrasse 61, 8142 Uitikon/Zürich",
-   "date": "10 - 11 Oct 2026",
-   "url": "https://www.players4players.de/en/tournaments",
-   "table": "",
-   "sources": [
-    "P4P"
-   ],
-   "lat": 47.3701567,
-   "lon": 8.4535427,
-   "approx": false
-  },
-  {
    "name": "Heilige drei Könige Turnier - Allgäu Open",
    "addr": "Ottobeuren",
    "date": "9 - 10 Jan 2027",
    "url": "https://www.players4players.de/en/tournaments",
    "table": "",
+   "category": "",
    "sources": [
     "P4P"
    ],
@@ -463,6 +470,7 @@
    "date": "27 - 28 Mar 2027",
    "url": "https://www.players4players.de/en/tournaments",
    "table": "",
+   "category": "",
    "sources": [
     "P4P"
    ],
@@ -476,6 +484,7 @@
    "date": "26 - 27 Jun 2027",
    "url": "https://www.players4players.de/en/tournaments",
    "table": "",
+   "category": "",
    "sources": [
     "P4P"
    ],
@@ -489,6 +498,7 @@
    "date": "25 - 26 Sep 2027",
    "url": "https://www.players4players.de/en/tournaments",
    "table": "",
+   "category": "",
    "sources": [
     "P4P"
    ],
