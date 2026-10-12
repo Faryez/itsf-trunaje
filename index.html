@@ -38,7 +38,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 <div id="msg" style="font-size:13px;color:var(--text-danger);min-height:0"></div>
 <div id="ask" style="display:none;background:var(--bg-accent);color:var(--text-accent);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div style="margin-bottom:10px">Chceš jako výchozí bod použít svou aktuální polohu? Prohlížeč se tě zeptá na povolení.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="askYes" type="button">Ano, použít polohu</button><button id="askNo" type="button">Ne, použít Prahu</button></div></div>
 <div id="chips" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:-4px 0 14px"><span id="schips" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></span><label id="tlabel" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">Stůl: <select id="tsel" aria-label="Stůl"></select></label></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:-4px 0 14px"><span id="schips" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></span><label id="clabel" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">Kategorie: <select id="csel" aria-label="Kategorie"></select></label><label id="tlabel" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">Stůl: <select id="tsel" aria-label="Stůl"></select></label></div>
 <div class="grid">
  <div id="list" style="display:flex;flex-direction:column;gap:8px"></div>
  <div class="mapbox"><div id="mapwrap" style="position:relative"><div id="map" style="width:100%;min-height:240px;line-height:0"></div><div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:6px;z-index:4"><button class="zb" id="zin" aria-label="Přiblížit">+</button><button class="zb" id="zout" aria-label="Oddálit">−</button><button class="zb" id="zrs" aria-label="Původní pohled" style="font-size:11px">Reset</button></div><div id="pop"></div></div></div>
@@ -56,11 +56,11 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const R=6371,W=400,H=380;
 const roadC=LS('road')||{};
 let start={name:'Praha',lon:14.43,lat:50.08};
-let T=[],P=[],max=600,tbl=null,srcF=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
+let T=[],P=[],max=600,tbl=null,srcF=null,cat=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
 const hav=(a,b)=>{const r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const x=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const val=t=>t.road??t.air;
 const tlow=t=>(t.table||'').trim().toLowerCase();
-const vis=t=>val(t)<=max&&(!tbl||tlow(t)===tbl)&&(!srcF||(t.sources||[]).includes(srcF));
+const vis=t=>val(t)<=max&&(!tbl||tlow(t)===tbl)&&(!srcF||(t.sources||[]).includes(srcF))&&(!cat||(t.category||'')===cat);
 const col=k=>k<300?'success':k<600?'warning':'danger';
 const fmt=n=>Math.round(n).toLocaleString('cs-CZ').replace(/\u00a0/g,' ');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -251,6 +251,11 @@ function render(){
  const tb=[...tm.entries()].sort((a,b)=>a[1].localeCompare(b[1]));
  const tl=$('tlabel'),ts=$('tsel');
  if(tb.length){tl.style.display='flex';ts.innerHTML='<option value="">Všechny</option>'+tb.map(([k,n])=>`<option value="${esc(k)}"${tbl===k?' selected':''}>${esc(n)}</option>`).join('');ts.onchange=()=>{tbl=ts.value||null;render();};}else tl.style.display='none';
+ const ORDER=['ITSF 250','ITSF 500','ITSF 750','World Series','World Champions League','World Cup','Gold Finals','Americas Cup'];
+ const cs=new Set();T.forEach(t=>{if(t.category)cs.add(t.category);});
+ const cl=[...cs].sort((a,b)=>{const ia=ORDER.indexOf(a),ib=ORDER.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib)||a.localeCompare(b);});
+ const cc=$('clabel'),cse=$('csel');
+ if(cl.length){cc.style.display='flex';cse.innerHTML='<option value="">V\u0161echny</option>'+cl.map(n=>`<option value="${esc(n)}"${cat===n?' selected':''}>${esc(n)}</option>`).join('');cse.onchange=()=>{cat=cse.value||null;max=cat?1000:600;sel=null;render();};}else cc.style.display='none';
  const sm=new Set();T.forEach(t=>(t.sources||[]).forEach(x=>sm.add(x)));
  const sl=[...sm].sort();
  $('schips').innerHTML=sl.length>1?'<span style="font-size:12px;color:var(--text-secondary)">Zdroj:</span>'+[['','Vše'],...sl.map(x=>[x,x])].map(([k,n])=>`<button class="chip" data-s="${esc(k)}" style="${(srcF||'')===k?ON:''}">${esc(n)}</button>`).join(''):'';
