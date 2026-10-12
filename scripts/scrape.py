@@ -18,6 +18,13 @@ MONTHS = ["january", "february", "march", "april", "may", "june", "july", "augus
 
 
 # ---------- pomocne funkce ----------
+def norm_table(t):
+    """'Tornado T-3000' -> 'Tornado' (zobrazuje se jen zkraceny nazev)"""
+    t = (t or "").strip()
+    return "Tornado" if re.match(r"tornado\b", t, re.I) else t
+
+
+
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     return urllib.request.urlopen(req, timeout=40).read()
@@ -155,7 +162,10 @@ ADDR_JS = """() => {
  const j=L.indexOf('Table',c>=0?c:0);
  let table=j>=0&&L[j+1]?L[j+1]:'';
  if(['Start','End','Timezone','Contact','Address','Status','Info Package'].includes(table))table='';
- return {addr:i>=0&&L[i+1]?L[i+1]:'',table};
+ const KEYS=['Name','Organizer','Status','Table','Info Package','Start','End','Timezone','Contact','Address'];
+ let category='';
+ if(c>=0){for(let k=c+1;k<L.length&&!KEYS.includes(L[k]);k++){const m=L[k].match(/^(.*?)\\s*\\(ITSF\\)\\s*$/i);if(m){category=m[1].trim();break;}}}
+ return {addr:i>=0&&L[i+1]?L[i+1]:'',table,category};
 }"""
 
 
@@ -186,7 +196,7 @@ def scrape_itsf(ctx):
     page.on("response", on_resp)
     for r in rows:
         m = re.search(r"/p/([A-Za-z0-9]+)", r["url"] or "")
-        addr, table = "", ""
+        addr, table, category = "", "", ""
         pairs.clear()
         hrefs = []
         if m:
@@ -195,6 +205,7 @@ def scrape_itsf(ctx):
                 page.wait_for_function("document.body.innerText.includes('Address')", timeout=15000)
                 res = page.evaluate(ADDR_JS)
                 addr, table = res["addr"], (res["table"] or "").strip()
+                category = (res.get("category") or "").strip()
                 page.wait_for_timeout(800)
                 hrefs = page.evaluate("() => [...document.querySelectorAll('a')].map(a => a.href)")
             except Exception as e:
@@ -208,7 +219,7 @@ def scrape_itsf(ctx):
         url = f"{CORAL}/p/{m.group(1)}" if m else ""
         found = list(pairs)
         coords_from_hrefs(hrefs, found)
-        items.append({"name": r["name"], "addr": addr, "exact": exact, "date": r["date"], "url": url, "table": table, "source": S_ITSF, "pairs": found})
+        items.append({"name": r["name"], "addr": addr, "exact": exact, "date": r["date"], "url": url, "table": table, "source": S_ITSF, "category": category, "pairs": found})
     page.close()
     return items
 
@@ -253,7 +264,7 @@ def parse_wft_lines(lines):
         if key in seen:
             continue
         seen.add(key)
-        out.append({"name": name, "addr": city, "exact": False, "date": date, "table": "", "source": S_WFT})
+        out.append({"name": name, "addr": city, "exact": False, "date": date, "table": "Tornado", "source": S_WFT})
     return out
 
 
@@ -459,7 +470,7 @@ def main():
                         g = pg
                         print("presna poloha ze stranky:", it["name"])
                 rec = {"name": it["name"], "addr": it["addr"], "date": it["date"], "url": it.get("url", ""),
-                       "table": it.get("table", ""), "sources": [src], **g}
+                       "table": norm_table(it.get("table", "")), "category": it.get("category", ""), "sources": [src], **g}
                 out.append(rec)
                 CACHE.write_text(json.dumps(cache, ensure_ascii=False))
         else:
