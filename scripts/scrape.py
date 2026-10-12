@@ -155,7 +155,8 @@ LIST_JS = r"""() => {
  const dateRe=/^\d{1,2}(\s*-\s*\d{1,2})?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(\s|$)/i;
  return regs.map(a=>{
   const L=rowOf(a).innerText.split('\n').map(x=>x.trim()).filter(Boolean).filter(x=>!/^(REGISTER|INFO|NEW)$/i.test(x));
-  return {name:L[0],cc:L.find(x=>/^[A-Z]{3}$/.test(x))||L.slice(1).find(x=>!dateRe.test(x)&&!/^itsf/i.test(x))||'',date:L.find(x=>dateRe.test(x))||'',url:a.href};
+  const imgs=[...rowOf(a).querySelectorAll('img')].map(i=>i.currentSrc||i.src).filter(Boolean);
+  return {logo:imgs.length?imgs[imgs.length-1]:'',name:L[0],cc:L.find(x=>/^[A-Z]{3}$/.test(x))||L.slice(1).find(x=>!dateRe.test(x)&&!/^itsf/i.test(x))||'',date:L.find(x=>dateRe.test(x))||'',url:a.href};
  });
 }"""
 ADDR_JS = """() => {
@@ -170,6 +171,24 @@ ADDR_JS = """() => {
  if(c>=0){for(let k=c+1;k<L.length&&!KEYS.includes(L[k]);k++){const m=L[k].match(/^(.*?)\\s*\\(ITSF\\)\\s*$/i);if(m){category=m[1].trim();break;}}}
  return {addr:i>=0&&L[i+1]?L[i+1]:'',table,category};
 }"""
+
+
+ROW_LOGOS = {}
+
+
+def pick_row_logos(obs):
+    """obs: nazev stolu -> seznam adres obrazku z radku seznamu. Prijme jen jednoznacne dvojice
+    (stul ma vzdy stejny obrazek a ten se nepouziva u jineho stolu) - tim se vyradi vlajky."""
+    out = {}
+    for name, srcs in obs.items():
+        u = set(srcs)
+        if not name or len(u) != 1:
+            continue
+        src = next(iter(u))
+        if any(src in set(o) for n2, o in obs.items() if n2 != name):
+            continue
+        out[name.lower()] = src
+    return out
 
 
 def scrape_itsf(ctx):
@@ -187,6 +206,7 @@ def scrape_itsf(ctx):
     rows = page.evaluate(LIST_JS)
     print("ITSF turnaje:", len(rows))
     items = []
+    obs = {}
     pairs = []
 
     def on_resp(resp):
@@ -220,10 +240,15 @@ def scrape_itsf(ctx):
         elif c and c.lower() not in addr.lower():
             addr += ", " + c
         url = f"{CORAL}/p/{m.group(1)}" if m else ""
+        if table and r.get("logo"):
+            obs.setdefault(table, []).append(r["logo"])
         found = list(pairs)
         coords_from_hrefs(hrefs, found)
         items.append({"name": r["name"], "addr": addr, "exact": exact, "date": r["date"], "url": url, "table": table, "source": S_ITSF, "category": category, "pairs": found})
     page.close()
+    ROW_LOGOS.clear()
+    ROW_LOGOS.update(pick_row_logos(obs))
+    print("loga z radku seznamu ITSF:", sorted(ROW_LOGOS))
     return items
 
 
@@ -438,10 +463,22 @@ def merge(out):
 
 
 # ---------- loga stolu (stranka Partners na ITSF) ----------
-LOGOS_JS = """() => [...document.querySelectorAll('img')].map(i => {
- const box = i.closest('a,li,div,figure');
- return {src: i.currentSrc || i.src, alt: i.alt || '', text: box ? box.innerText.slice(0, 120) : ''};
-}).filter(x => x.src && !x.src.startsWith('data:'))"""
+LOGOS_JS = """() => {
+ const out = [];
+ const abs = u => { try { return new URL(u, location.href).href; } catch (e) { return ''; } };
+ document.querySelectorAll('img,source').forEach(i => {
+  const cand = [i.currentSrc, i.src, i.getAttribute('data-src'), i.getAttribute('data-lazy-src'),
+   (i.getAttribute('srcset') || '').split(' ')[0], (i.getAttribute('data-srcset') || '').split(' ')[0]].filter(Boolean);
+  const box = i.closest('a,li,div,figure');
+  if (cand.length) out.push({src: abs(cand[0]), alt: i.alt || '', text: box ? box.innerText.slice(0, 120) : ''});
+ });
+ document.querySelectorAll('*').forEach(e => {
+  const bg = getComputedStyle(e).backgroundImage;
+  const m = bg && bg.match(/url\\("?([^")]+)"?\\)/);
+  if (m && !m[1].startsWith('data:')) out.push({src: abs(m[1]), alt: '', text: e.innerText ? e.innerText.slice(0, 120) : ''});
+ });
+ return out;
+}"""
 
 
 def pick_logo_imgs(imgs):
@@ -456,29 +493,45 @@ def pick_logo_imgs(imgs):
     return found
 
 
+def slug(k):
+    return re.sub(r"[^a-z0-9]+", "-", k.lower()).strip("-")
+
+
 def scrape_logos(ctx):
+    found = dict(ROW_LOGOS)  # klic = nazev stolu (maly pismeny), hodnota = adresa obrazku
     page = ctx.new_page()
-    page.goto(PARTNERS_URL, wait_until="networkidle")
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-    page.wait_for_timeout(1500)
-    imgs = page.evaluate(LOGOS_JS)
-    found = pick_logo_imgs(imgs)
+    try:
+        page.goto(PARTNERS_URL, wait_until="networkidle")
+        for _ in range(4):
+            page.evaluate("window.scrollBy(0, document.body.scrollHeight / 3)")
+            page.wait_for_timeout(700)
+        page.wait_for_timeout(1500)
+        imgs = page.evaluate(LOGOS_JS)
+        print("Partners: nalezeno obrazku:", len(imgs))
+        for im in imgs[:25]:
+            print("   ", im["src"][-70:], "|", im["alt"][:25], "|", im["text"].replace("\n", " ")[:30])
+        for brand, src in pick_logo_imgs(imgs).items():
+            if not any(brand in k for k in found):
+                found[brand] = src
+    except Exception as e:
+        print("Partners stranka selhala:", e)
+    page.close()
     LOGO_DIR.mkdir(parents=True, exist_ok=True)
     logos = {}
-    for brand, src in found.items():
+    for key, src in found.items():
         try:
             resp = ctx.request.get(src)
             if not resp.ok:
+                print("logo HTTP", resp.status, key)
                 continue
             ext = pathlib.Path(urllib.parse.urlparse(src).path).suffix.lower()
             if ext not in (".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"):
                 ext = ".png"
-            path = LOGO_DIR / (brand + ext)
+            path = LOGO_DIR / (slug(key) + ext)
             path.write_bytes(resp.body())
-            logos[brand] = path.as_posix()
+            logos[key] = path.as_posix()
         except Exception as e:
-            print("logo se nepodarilo stahnout:", brand, e)
-    page.close()
+            print("logo se nepodarilo stahnout:", key, e)
     print("loga stolu:", sorted(logos))
     return logos
 
@@ -534,7 +587,7 @@ def main():
 
     if not logos:
         logos = old.get("logos", {})
-    OUT.write_text(json.dumps({"updated": datetime.datetime.utcnow().isoformat() + "Z", "logos": logos, "tournaments": merged},
+    OUT.write_text(json.dumps({"updated": datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z"), "logos": logos, "tournaments": merged},
                               ensure_ascii=False, indent=1))
     print("ulozeno", len(merged))
 
