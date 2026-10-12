@@ -21,6 +21,8 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 #pop a,.gm{color:var(--text-accent);text-decoration:none}
 .zb{width:34px;height:34px;padding:0;font-size:18px;line-height:1;border-radius:8px}
 .warn{margin-top:8px;background:var(--bg-warning);color:var(--text-warning);border-radius:8px;padding:6px 10px;font-size:12px;line-height:1.4}
+.lg{display:inline-flex;align-items:center;background:#fff;border:0.5px solid rgba(11,11,11,.14);border-radius:7px;padding:3px 8px;height:28px}
+.lg img{height:20px;max-width:96px;object-fit:contain;display:block}
 .fl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
 .chip{border-radius:999px;padding:5px 14px}
 </style></head><body>
@@ -58,9 +60,10 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const R=6371,W=400,H=380;
 const roadC=LS('road')||{};
 let start={name:'Praha',lon:14.43,lat:50.08};
-let T=[],P=[],max=1000,tbl=null,srcF=null,cat=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
+let LOGOS={},T=[],P=[],max=1000,tbl=null,srcF=null,cat=null,sel=null,world=null,proj=null,sortKey='days',skipped=0,gen=0;
 const hav=(a,b)=>{const r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const x=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const val=t=>t.road??t.air;
+const logoFor=t=>{const n=(t.table||'').toLowerCase();for(const k in LOGOS){if(n.includes(k))return LOGOS[k];}return '';};
 const tlow=t=>(t.table||'').trim().toLowerCase();
 const vis=t=>val(t)<=max&&(!tbl||tlow(t)===tbl)&&(!srcF||(t.sources||[]).includes(srcF))&&(!cat||(t.category||'')===cat);
 const col=k=>k<300?'success':k<600?'warning':'danger';
@@ -97,6 +100,7 @@ function cityOf(t){
  return t.name.length>24?t.name.slice(0,23)+'…':t.name;
 }
 function prepare(j){
+ LOGOS=j.logos||{};
  const all=j.tournaments||[];
  T=all.filter(t=>t.lat!=null).map(t=>({...t,sources:t.sources||['ITSF'],id:t.lat.toFixed(2)+','+t.lon.toFixed(2)}));
  skipped=all.length-T.length;
@@ -280,7 +284,7 @@ function render(){
    ${t.url?`<a class="gm" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Odkaz na turnaj ↗</a>`:''}
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;min-height:24px">
-   <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${t.table?`<span style="font-size:12px;border:0.5px solid var(--border-strong);padding:2px 10px;border-radius:999px">${esc(t.table)}</span>`:''}<span style="font-size:11px;color:var(--text-muted)">${esc((t.sources||[]).join(' · '))}</span></span>
+   <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${t.table?(logoFor(t)?`<span class="lg" title="${esc(t.table)}"><img src="${esc(logoFor(t))}" alt="${esc(t.table)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none;font-size:12px;color:#222">${esc(t.table)}</span></span>`:`<span style="font-size:12px;border:0.5px solid var(--border-strong);padding:2px 10px;border-radius:999px">${esc(t.table)}</span>`):''}<span style="font-size:11px;color:var(--text-muted)">${esc((t.sources||[]).join(' · '))}</span></span>
    ${canRoute(t)?`<a class="gm" href="${gmaps(t)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">${routeTxt(t)} ↗</a>`:''}
   </div></div>`;}).join('');
  document.querySelectorAll('#list [data-id]').forEach(el=>el.onclick=()=>{sel=(sel===el.dataset.id?null:el.dataset.id);render();if(sel)focusPin(sel);if(window.innerWidth<=820)$('map').scrollIntoView({behavior:'smooth',block:'nearest'});});
