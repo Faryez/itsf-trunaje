@@ -32,12 +32,10 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
  </div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
   <form id="sf" style="display:flex;gap:6px"><input id="start" aria-label="Výchozí bod" style="width:150px" autocomplete="off"><button type="submit">Nastavit</button></form>
-  <button id="geo" type="button" aria-label="Použít moji polohu">Moje poloha</button>
   <select id="sort" aria-label="Řadit podle"><option value="days">Nejbližší termín</option><option value="km">Nejblíž k vám</option></select>
  </div>
 </div>
 <div id="msg" style="font-size:13px;color:var(--text-danger);min-height:0"></div>
-<div id="ask" style="display:none;background:var(--bg-accent);color:var(--text-accent);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div style="margin-bottom:10px">Chceš jako výchozí bod použít svou aktuální polohu? Prohlížeč se tě zeptá na povolení.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="askYes" type="button">Ano, použít polohu</button><button id="askNo" type="button">Ne, použít Prahu</button></div></div>
 <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
 <label class="fl">Vzdálenost: <select id="dsel" aria-label="Vzdálenost"></select></label>
 <label id="slabel" class="fl">Zdroj: <select id="ssel" aria-label="Zdroj"></select></label>
@@ -49,7 +47,6 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
  <div class="mapbox"><div id="mapwrap" style="position:relative"><div id="map" style="width:100%;min-height:240px;line-height:0"></div><div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:6px;z-index:4"><button class="zb" id="zin" aria-label="Přiblížit">+</button><button class="zb" id="zout" aria-label="Oddálit">−</button><button class="zb" id="zrs" aria-label="Původní pohled" style="font-size:11px">Reset</button></div><div id="pop"></div></div></div>
 </div>
 <p id="note" style="font-size:12px;color:var(--text-muted);margin:12px 0 0"></p>
-<p style="font-size:12px;margin:6px 0 0"><a href="#" id="reask" class="gm">Znovu se zeptat na výchozí bod</a></p>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
@@ -300,26 +297,6 @@ async function setStart(q){
 }
 $('start').value=start.name;
 $('sf').onsubmit=e=>{e.preventDefault();const q=$('start').value.trim();if(q)setStart(q);};
-function useGeo(){
- return new Promise(res=>{
-  if(!navigator.geolocation){res(false);return;}
-  navigator.geolocation.getCurrentPosition(p=>{
-   start={name:'Moje poloha',lat:p.coords.latitude,lon:p.coords.longitude};
-   $('start').value='Moje poloha';sel=null;resetZoom();recalc();res(true);
-  },()=>res(false),{timeout:12000,maximumAge:600000});
- });
-}
-function usePraha(){start={name:'Praha',lon:14.43,lat:50.08};$('start').value='Praha';sel=null;resetZoom();recalc();}
-$('geo').onclick=()=>{$('msg').textContent='';useGeo().then(ok=>{if(!ok)$('msg').textContent='Polohu se nepodařilo zjistit. Zkontroluj, že je povolená.';});};
-$('askYes').onclick=()=>{
- SV('startChoice','geo');$('ask').style.display='none';$('msg').textContent='';
- useGeo().then(ok=>{if(!ok){SV('startChoice','praha');usePraha();$('msg').textContent='Polohu se nepodařilo zjistit nebo nebyla povolena, použita Praha.';}});
-};
-$('askNo').onclick=()=>{SV('startChoice','praha');$('ask').style.display='none';usePraha();};
-$('reask').onclick=e=>{e.preventDefault();SV('startChoice',null);$('ask').style.display='block';$('ask').scrollIntoView({behavior:'smooth',block:'nearest'});};
-const choice=LS('startChoice');
-if(choice==='geo'){useGeo().then(ok=>{if(!ok){usePraha();$('msg').textContent='Polohu se nepodařilo zjistit, použita Praha.';}});}
-else if(!choice){$('ask').style.display='block';}
 $('sort').onchange=e=>{sortKey=e.target.value;render();};
 window.addEventListener('resize',drawPins);
 $('zin').onclick=()=>svg.transition().duration(250).call(zoomB.scaleBy,1.7);
