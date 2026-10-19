@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12T12:41:57.450260Z",
+ "updated": "2026-10-19T10:29:52.451505Z",
  "logos": {
   "leonhart": "data/logos/leonhart.png",
   "tornado": "data/logos/tornado.png",
@@ -10,20 +10,6 @@
   "other": "data/logos/other.png"
  },
  "tournaments": [
-  {
-   "name": "Ricardo Lopes Cup 2026",
-   "addr": "Rua Centro Cívico, 6200-866, Covilhã, Castelo Branco, Portugal",
-   "date": "3 - 4 Oct",
-   "url": "https://app.tablesoccer.org/p/6R3X47",
-   "table": "Leonhart",
-   "category": "ITSF 250",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 40.3092027,
-   "lon": -7.4926777,
-   "approx": false
-  },
   {
    "name": "MULTITABLE WT250 ARCD BENTE 2026",
    "addr": "Rua da Agra, 4770, Bente, Braga, Portugal",
@@ -222,8 +208,8 @@
    "approx": false
   },
   {
-   "name": "FUS SLOVAK TORNADO MASTERS 2026",
-   "addr": "Jiráskova 1, 851 01, Bratislava, Bratislavský kraj, Slovakia",
+   "name": "FUS TORNADO MASTERS 2026",
+   "addr": "Bajkalská 2j, 831 04, Bratislavský kraj, Slovakia",
    "date": "13 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/Z8RV46",
    "table": "Tornado",
@@ -231,8 +217,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 48.1177374,
-   "lon": 17.1041712,
+   "lat": 48.1633137,
+   "lon": 17.138418,
    "approx": false
   },
   {
