@@ -1,29 +1,15 @@
 {
- "updated": "2026-10-19T10:29:52.451505Z",
+ "updated": "2026-10-25T22:46:09.312298Z",
  "logos": {
   "leonhart": "data/logos/leonhart.png",
-  "tornado": "data/logos/tornado.png",
   "rosengart": "data/logos/rosengart.png",
+  "tornado": "data/logos/tornado.png",
   "garlando": "data/logos/garlando.png",
   "bonzini": "data/logos/bonzini.png",
   "ullrich kicker": "data/logos/ullrich-kicker.png",
   "other": "data/logos/other.png"
  },
  "tournaments": [
-  {
-   "name": "MULTITABLE WT250 ARCD BENTE 2026",
-   "addr": "Rua da Agra, 4770, Bente, Braga, Portugal",
-   "date": "10 Oct",
-   "url": "https://app.tablesoccer.org/p/7DO28Z",
-   "table": "",
-   "category": "ITSF 250",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 41.3877866,
-   "lon": -8.4509779,
-   "approx": false
-  },
   {
    "name": "World Series Leonhart 2026",
    "addr": "Halbergstraße 84, 66121, Saarbrücken, Saarbrücken, Germany",
@@ -36,20 +22,6 @@
    ],
    "lat": 49.230346,
    "lon": 7.015143,
-   "approx": false
-  },
-  {
-   "name": "2026 OTTAWA FALL OPEN",
-   "addr": "Merivale Road 1642, K2G 4A1, Nepean, Nepean, Canada",
-   "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/6AYOB6",
-   "table": "Tornado",
-   "category": "ITSF 250",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 45.345296,
-   "lon": -75.731501,
    "approx": false
   },
   {
@@ -67,20 +39,6 @@
    "approx": false
   },
   {
-   "name": "Csíki Csocsó Pro Tour",
-   "addr": "Miercurea Ciuc, Harghita County, Romania",
-   "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/6P3XRZ",
-   "table": "Garlando",
-   "category": "ITSF 250",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 45.9852129,
-   "lon": 24.6859225,
-   "approx": true
-  },
-  {
    "name": "FUS Eastern Slovak Championships 2026/27",
    "addr": "Čermeľská cesta 1, 040 01, Košický kraj, Slovakia",
    "date": "23 - 25 Oct",
@@ -95,18 +53,32 @@
    "approx": false
   },
   {
-   "name": "III Barbara Kurtyka Memorial",
-   "addr": "Składowa 5, 50-209, Wrocław, Województwo dolnośląskie, Poland",
+   "name": "2026 OTTAWA FALL OPEN",
+   "addr": "Merivale Road 1642, K2G 4A1, Nepean, Nepean, Canada",
    "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/7NPQ8Z",
-   "table": "Leonhart",
-   "category": "ITSF 500",
+   "url": "https://app.tablesoccer.org/p/6AYOB6",
+   "table": "Tornado",
+   "category": "ITSF 250",
    "sources": [
     "ITSF"
    ],
-   "lat": 51.1202654,
-   "lon": 17.0270071,
+   "lat": 45.345296,
+   "lon": -75.731501,
    "approx": false
+  },
+  {
+   "name": "Csíki Csocsó Pro Tour",
+   "addr": "Miercurea Ciuc, Harghita County, Romania",
+   "date": "23 - 25 Oct",
+   "url": "https://app.tablesoccer.org/p/6P3XRZ",
+   "table": "Garlando",
+   "category": "ITSF 250",
+   "sources": [
+    "ITSF"
+   ],
+   "lat": 45.9852129,
+   "lon": 24.6859225,
+   "approx": true
   },
   {
    "name": "Americas Cup 2026",
@@ -124,7 +96,7 @@
   },
   {
    "name": "8th Romanian Bonzini Masters",
-   "addr": "Splaiul Independenței 315, 060043, București, București, Romania",
+   "addr": "Strada Pravăț 22, 023741, București, București, Romania",
    "date": "30 Oct - 1 Nov",
    "url": "https://app.tablesoccer.org/p/Z4N4W6",
    "table": "Bonzini",
@@ -132,8 +104,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 44.4441688,
-   "lon": 26.0498686,
+   "lat": 44.4240411,
+   "lon": 26.0381952,
    "approx": false
   },
   {
@@ -264,6 +236,20 @@
    "approx": false
   },
   {
+   "name": "2026 JAPAN OPEN",
+   "addr": "169-0073, Shinjuku City, Tokyo, Japan",
+   "date": "20 - 23 Nov",
+   "url": "https://app.tablesoccer.org/p/6P3JGZ",
+   "table": "Tornado",
+   "category": "ITSF 500",
+   "sources": [
+    "ITSF"
+   ],
+   "lat": 35.6999497,
+   "lon": 139.699351,
+   "approx": false
+  },
+  {
    "name": "Aarhus Open",
    "addr": "N. J. Fjords Gade 2R, 8000, Aarhus, Denmark",
    "date": "20 - 21 Nov",
@@ -289,6 +275,20 @@
    ],
    "lat": -1.2566229,
    "lon": 36.8802269,
+   "approx": false
+  },
+  {
+   "name": "XI Mistrzostwa Krakowa w Futbolu Stołowym 2026",
+   "addr": "Osiedle Zielone 9, 31-968, Kraków, Województwo małopolskie, Poland",
+   "date": "11 - 13 Dec",
+   "url": "https://app.tablesoccer.org/p/6AKR2Z",
+   "table": "Leonhart",
+   "category": "ITSF 250",
+   "sources": [
+    "ITSF"
+   ],
+   "lat": 50.0798907,
+   "lon": 20.0438848,
    "approx": false
   },
   {
