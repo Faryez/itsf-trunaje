@@ -36,6 +36,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
   <form id="sf" style="display:flex;gap:6px"><input id="start" aria-label="Výchozí bod" style="width:150px" autocomplete="off"><button type="submit">Nastavit</button></form>
   <select id="sort" aria-label="Řadit podle"><option value="days">Nejbližší termín</option><option value="km">Nejblíž k vám</option></select>
+  <button id="rf" type="button" aria-label="Obnovit data">↻ Obnovit</button>
  </div>
 </div>
 <div id="msg" style="font-size:13px;color:var(--text-danger);min-height:0"></div>
@@ -44,6 +45,7 @@ button{cursor:pointer}button:hover{background:var(--surface-1)}
 <label id="slabel" class="fl">Zdroj: <select id="ssel" aria-label="Zdroj"></select></label>
 <label id="clabel" class="fl" style="display:none">Kategorie: <select id="csel" aria-label="Kategorie"></select></label>
 <label id="tlabel" class="fl" style="display:none">Stůl: <select id="tsel" aria-label="Stůl"></select></label>
+<label class="fl">Navigace: <select id="nsel" aria-label="Navigace"><option value="google">Google Maps</option><option value="waze">Waze</option></select></label>
 </div>
 <div class="grid">
  <div id="list" style="display:flex;flex-direction:column;gap:8px"></div>
@@ -95,11 +97,12 @@ function cd(t){
  return {n,txt:n===0?'dnes':n===1?'zítra':'za '+n+' '+(n<5?'dny':'dní')};
 }
 function cityOf(t){
+ if(t.city)return t.city;
  const p=t.addr.split(',').map(x=>x.trim()).filter(Boolean);
  if(t.approx&&p[0]&&p[0].length<40)return p[0];
  for(let i=0;i<p.length-1;i++){
   if(/^\d[\d\s-]*$/.test(p[i])){if(p[i+1]&&i+1<p.length-1)return p[i+1];continue;}
-  const m=p[i].match(/^\d[\d\s-]*\s+(.+)$/);if(m)return m[1];
+  const m=p[i].match(/^\d[\d\s-]*\s+(.+)$/);if(m){if(/^[A-Z]{2}$/.test(m[1])&&p[i+1]&&i+1<p.length-1)return p[i+1];return m[1];}
  }
  return t.name.length>24?t.name.slice(0,23)+'…':t.name;
 }
@@ -233,9 +236,11 @@ function drawPins(){
  gPins.append('text').attr('x',h[0]).attr('y',h[1]+26).attr('text-anchor','middle').attr('font-size',12).attr('font-weight',500).attr('fill','var(--text-primary)').style('pointer-events','none').text(start.name);
  showPop();
 }
-const canRoute=t=>t.air<3500;
-const routeTxt=t=>t.approx?'Trasa do města':'Trasa v Google Maps';
-const gmaps=t=>'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent(start.name)+'&destination='+encodeURIComponent(t.addr);
+let nav='google';try{nav=localStorage.getItem('nav')||'google';}catch(e){}
+const streetLike=a=>/\p{L}{2,}\.?\s+\d+[a-zA-Z]?(?:[-/]\d+)?\s*(,|$)/u.test(a);
+const canRoute=t=>true;
+const routeTxt=t=>t.approx?(nav==='waze'?'M\u011bsto ve Waze':'M\u011bsto v map\u00e1ch'):(nav==='waze'?'Otev\u0159\u00edt ve Waze':'Otev\u0159\u00edt v map\u00e1ch');
+const gmaps=t=>nav==='waze'?'https://waze.com/ul?ll='+t.lat+','+t.lon+'&zoom='+(t.approx?12:17):'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((!t.approx&&!streetLike(t.addr))?t.lat+','+t.lon:t.addr);
 function showPop(){
  const pop=$('pop');pop.style.display='none';pop.innerHTML='';
  const p=P.find(x=>x.id===sel);
@@ -282,7 +287,7 @@ function render(){
    <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">${esc(t.addr)}${t.date?' · '+esc(t.date):''}</div></div>
    <div style="text-align:right;white-space:nowrap"><div style="font-size:15px;font-weight:500;color:var(--text-${col(val(t))})">${t.approx?'~':''}${fmt(val(t))} km</div><div style="font-size:11px;color:var(--text-muted)">${t.road==null?'vzdušně':'autem'}</div></div>
   </div>
-  ${t.approx?'<div class="warn"><b style="font-weight:500">Přibližná poloha:</b> přesná adresa není k dispozici, vzdálenost a trasa vedou do centra města.</div>':''}
+  ${t.approx?'<div class="warn"><b style="font-weight:500">Přibližná poloha:</b> přesná adresa není k dispozici, vzdálenost i odkaz do map vedou do centra města.</div>':''}
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;min-height:24px">
    <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">${t.cd.txt?`<span style="font-size:12px;background:var(--bg-accent);color:var(--text-accent);padding:2px 10px;border-radius:999px">${t.cd.txt}</span>`:''}${t.category?`<span class="cat" style="${catStyle(t.category)}">${esc(t.category)}</span>`:''}</span>
    ${t.url?`<a class="gm" href="${esc(t.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:12px">Odkaz na turnaj ↗</a>`:''}
@@ -305,11 +310,17 @@ async function setStart(q){
 }
 $('start').value=start.name;
 $('sf').onsubmit=e=>{e.preventDefault();const q=$('start').value.trim();if(q)setStart(q);};
+$('rf').onclick=()=>{
+ const b=$('rf');b.disabled=true;b.textContent='Obnovuji…';
+ fetch('data/tournaments.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{prepare(j);b.textContent='✓ Obnoveno';}).catch(()=>{b.textContent='Chyba';}).finally(()=>setTimeout(()=>{b.disabled=false;b.textContent='↻ Obnovit';},1800));
+};
+$('nsel').value=nav;
+$('nsel').onchange=()=>{nav=$('nsel').value;try{localStorage.setItem('nav',nav);}catch(e){}render();};
 $('sort').onchange=e=>{sortKey=e.target.value;render();};
 window.addEventListener('resize',drawPins);
 $('zin').onclick=()=>svg.transition().duration(250).call(zoomB.scaleBy,1.7);
 $('zout').onclick=()=>svg.transition().duration(250).call(zoomB.scaleBy,1/1.7);
 $('zrs').onclick=()=>svg.transition().duration(250).call(zoomB.transform,d3.zoomIdentity);
-fetch('data/tournaments.json').then(r=>r.json()).then(prepare).catch(()=>{$('upd').textContent='Data se nepodařilo načíst';});
+fetch('data/tournaments.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(prepare).catch(()=>{$('upd').textContent='Data se nepodařilo načíst';});
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w=>{world=w;drawMap();}).catch(()=>{$('map').innerHTML='<p style="font-size:13px;color:var(--text-secondary);padding:12px;line-height:1.5">Mapu se nepodařilo načíst.</p>';});
 </script></body></html>
