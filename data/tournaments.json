@@ -1,85 +1,13 @@
 {
- "updated": "2026-10-26T10:59:08.565586Z",
+ "updated": "2026-11-02T13:01:47.629552Z",
  "logos": {
-  "leonhart": "data/logos/leonhart.png",
-  "rosengart": "data/logos/rosengart.png",
-  "tornado": "data/logos/tornado.png",
-  "garlando": "data/logos/garlando.png",
-  "bonzini": "data/logos/bonzini.png",
   "ullrich kicker": "data/logos/ullrich-kicker.png",
+  "leonhart": "data/logos/leonhart.png",
+  "tornado": "data/logos/tornado.png",
+  "bonzini": "data/logos/bonzini.png",
   "other": "data/logos/other.png"
  },
  "tournaments": [
-  {
-   "name": "World Series Leonhart 2026",
-   "addr": "Halbergstraße 84, 66121, Saarbrücken, Saarbrücken, Germany",
-   "date": "14 - 18 Oct",
-   "url": "https://app.tablesoccer.org/p/ZBYNP6",
-   "table": "Leonhart",
-   "category": "World Series",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 49.230346,
-   "lon": 7.015143,
-   "approx": false
-  },
-  {
-   "name": "Czech Rosengart Open 2026",
-   "addr": "Žernosecká 2, 182 00, Czechia",
-   "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/ZVKGP7",
-   "table": "Rosengart",
-   "category": "ITSF 500",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 50.13239770000001,
-   "lon": 14.4756716,
-   "approx": false
-  },
-  {
-   "name": "FUS Eastern Slovak Championships 2026/27",
-   "addr": "Čermeľská cesta 1, 040 01, Košický kraj, Slovakia",
-   "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/692DK7",
-   "table": "Rosengart",
-   "category": "ITSF 500",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 48.7402476,
-   "lon": 21.2461172,
-   "approx": false
-  },
-  {
-   "name": "2026 OTTAWA FALL OPEN",
-   "addr": "Merivale Road 1642, K2G 4A1, Nepean, Nepean, Canada",
-   "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/6AYOB6",
-   "table": "Tornado",
-   "category": "ITSF 250",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 45.345296,
-   "lon": -75.731501,
-   "approx": false
-  },
-  {
-   "name": "Csíki Csocsó Pro Tour",
-   "addr": "Miercurea Ciuc, Harghita County, Romania",
-   "date": "23 - 25 Oct",
-   "url": "https://app.tablesoccer.org/p/6P3XRZ",
-   "table": "Garlando",
-   "category": "ITSF 250",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 45.9852129,
-   "lon": 24.6859225,
-   "approx": true
-  },
   {
    "name": "Americas Cup 2026",
    "addr": "Boulevard Kukulcan Km 13.5, 77500, Cancún, Quintana Roo, Mexico",
@@ -92,48 +20,6 @@
    ],
    "lat": 21.098288,
    "lon": -86.76689990000001,
-   "approx": false
-  },
-  {
-   "name": "8th Romanian Bonzini Masters",
-   "addr": "Strada Pravăț 22, 023741, București, București, Romania",
-   "date": "30 Oct - 1 Nov",
-   "url": "https://app.tablesoccer.org/p/Z4N4W6",
-   "table": "Bonzini",
-   "category": "ITSF 500",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 44.4240411,
-   "lon": 26.0381952,
-   "approx": false
-  },
-  {
-   "name": "Sofia Grand Masters 2026",
-   "addr": "Ловен Парк 5, 1172, София, София, Bulgaria",
-   "date": "30 Oct - 1 Nov",
-   "url": "https://app.tablesoccer.org/p/6J35QZ",
-   "table": "Leonhart",
-   "category": "ITSF 500",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 42.663465,
-   "lon": 23.343378,
-   "approx": false
-  },
-  {
-   "name": "CROATIA OPEN 2026",
-   "addr": "Kelekova ulica 4, 10360, Sesvete, Grad Zagreb, Croatia",
-   "date": "6 - 7 Nov",
-   "url": "https://app.tablesoccer.org/p/Z4NQ26",
-   "table": "Leonhart",
-   "category": "ITSF 500",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 45.8221114,
-   "lon": 16.1044112,
    "approx": false
   },
   {
@@ -152,6 +38,20 @@
    "approx": false
   },
   {
+   "name": "CROATIA OPEN 2026",
+   "addr": "Kelekova ulica 4, 10360, Sesvete, Grad Zagreb, Croatia",
+   "date": "6 - 7 Nov",
+   "url": "https://app.tablesoccer.org/p/Z4NQ26",
+   "table": "Leonhart",
+   "category": "ITSF 500",
+   "sources": [
+    "ITSF"
+   ],
+   "lat": 45.8221114,
+   "lon": 16.1044112,
+   "approx": false
+  },
+  {
    "name": "INTERNATIONAL MASTER'S TOUR INDIA 2026",
    "addr": "Ambala, Haryana, India",
    "date": "12 - 15 Nov",
@@ -163,6 +63,20 @@
    ],
    "lat": 30.3752011,
    "lon": 76.782122,
+   "approx": false
+  },
+  {
+   "name": "Alkhaleej",
+   "addr": "32453, Saihat, Eastern Province, Saudi Arabia",
+   "date": "13 - 14 Nov",
+   "url": "https://app.tablesoccer.org/p/6REAM7",
+   "table": "Tornado",
+   "category": "ITSF 500",
+   "sources": [
+    "ITSF"
+   ],
+   "lat": 26.4889047,
+   "lon": 50.0282166,
    "approx": false
   },
   {
@@ -180,7 +94,7 @@
    "approx": false
   },
   {
-   "name": "FUS TORNADO MASTERS 2026",
+   "name": "FUS TORNADO MASTERS 2026 (ITSF 500)",
    "addr": "Bajkalská 2j, 831 04, Bratislavský kraj, Slovakia",
    "date": "13 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/Z8RV46",
@@ -208,20 +122,6 @@
    "approx": false
   },
   {
-   "name": "Itsf Youth 500 Berlin",
-   "addr": "Siemensstraße 26, 10551, Berlin, Berlin, Germany",
-   "date": "14 - 15 Nov",
-   "url": "https://app.tablesoccer.org/p/ZWL237",
-   "table": "Leonhart",
-   "category": "ITSF 500",
-   "sources": [
-    "ITSF"
-   ],
-   "lat": 52.5339014,
-   "lon": 13.3380251,
-   "approx": false
-  },
-  {
    "name": "Amsterdam Open",
    "addr": "Zuider IJdijk 20, 1095 KN, Amsterdam, Netherlands",
    "date": "14 Nov",
@@ -233,6 +133,20 @@
    ],
    "lat": 52.365312,
    "lon": 4.9594958,
+   "approx": false
+  },
+  {
+   "name": "Itsf Youth 500 Berlin",
+   "addr": "Siemensstraße 26, 10551, Berlin, Berlin, Germany",
+   "date": "14 - 15 Nov",
+   "url": "https://app.tablesoccer.org/p/ZWL237",
+   "table": "Leonhart",
+   "category": "ITSF 500",
+   "sources": [
+    "ITSF"
+   ],
+   "lat": 52.5339014,
+   "lon": 13.3380251,
    "approx": false
   },
   {
@@ -287,8 +201,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 50.0798907,
-   "lon": 20.0438848,
+   "lat": 50.0799151,
+   "lon": 20.0440105,
    "approx": false
   },
   {
