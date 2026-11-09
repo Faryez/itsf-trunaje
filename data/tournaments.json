@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-02T13:01:47.629552Z",
+ "updated": "2026-11-09T13:34:46.855270Z",
  "logos": {
   "ullrich kicker": "data/logos/ullrich-kicker.png",
   "leonhart": "data/logos/leonhart.png",
@@ -30,8 +30,7 @@
    "table": "Ullrich Kicker",
    "category": "ITSF 500",
    "sources": [
-    "ITSF",
-    "P4P"
+    "ITSF"
    ],
    "lat": 49.1727504,
    "lon": 10.2531552,
@@ -53,7 +52,7 @@
   },
   {
    "name": "INTERNATIONAL MASTER'S TOUR INDIA 2026",
-   "addr": "Ambala, Haryana, India",
+   "addr": "Bassi Pathana, Punjab, India",
    "date": "12 - 15 Nov",
    "url": "https://app.tablesoccer.org/p/6JGQQ6",
    "table": "",
@@ -61,8 +60,8 @@
    "sources": [
     "ITSF"
    ],
-   "lat": 30.3752011,
-   "lon": 76.782122,
+   "lat": 30.6861187,
+   "lon": 76.40424039999999,
    "approx": false
   },
   {
@@ -123,7 +122,7 @@
   },
   {
    "name": "Amsterdam Open",
-   "addr": "Zuider IJdijk 20, 1095 KN, Amsterdam, Netherlands",
+   "addr": "Zuider IJdijk 20, 1095 KN, Amsterdam, Noord-Holland, Netherlands",
    "date": "14 Nov",
    "url": "https://app.tablesoccer.org/p/6R3W47",
    "table": "Leonhart",
@@ -179,7 +178,7 @@
   },
   {
    "name": "NAIROBI OPEN 2026",
-   "addr": "Kamunde Road, Nairobi, Kenya",
+   "addr": "Kamunde Road, Nairobi, Nairobi County, Kenya",
    "date": "5 Dec",
    "url": "https://app.tablesoccer.org/p/7DOBYZ",
    "table": "Other",
@@ -204,20 +203,6 @@
    "lat": 50.0799151,
    "lon": 20.0440105,
    "approx": false
-  },
-  {
-   "name": "Great Lakes Classic",
-   "addr": "Grand Rapids, MI, USA",
-   "date": "15 - 18 Oct 2026",
-   "url": "https://worldfoosballtour.com/pages/great-lakes-classic-2026",
-   "table": "Tornado",
-   "category": "",
-   "sources": [
-    "World Foosball Tour"
-   ],
-   "lat": 42.9632425,
-   "lon": -85.6678639,
-   "approx": true
   },
   {
    "name": "WFT International Championships of Foosball",
